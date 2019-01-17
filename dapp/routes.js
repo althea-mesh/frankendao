@@ -20,6 +20,10 @@
         controller: 'settingsCtrl',
         templateUrl: 'partials/settings.html'
       })
+      .when("/althea", {
+        controller: 'altheaCtrl',
+        templateUrl: 'partials/althea.html'
+      })
       .when("/signup", {
         controller: 'notificationsSignupConfirmationCtrl',
         templateUrl: 'partials/wallets.html'
