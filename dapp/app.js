@@ -7,10 +7,6 @@
         'ngRoute',
         'ngclipboard',
         'ui-notification'     
-      ],
-      'althea',
-      [
-        'react'
       ]
     );
   }
