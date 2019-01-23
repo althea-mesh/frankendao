@@ -1,19 +1,3 @@
-<html>
-  <head>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-bvyiisifek1dgmjrakycuhahrg32omucww7on3rydg4va+pmstsz/k68vbdejh4u"
-      crossorigin="anonymous"
-    >
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    >
-  </head>
-  <body class="container">
-      <div id="app"></div>
-      <script type="text/javascript">
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -87827,14 +87811,3 @@ module.exports = __webpack_require__(/*! ./app/dapp.js */"./app/dapp.js");
 /******/ });
 });
 //# sourceMappingURL=dapp.js.map
-      </script>
-  </body>
-</html>
-<!--
-<html>
-  <body class="container">
-    <h1>HELLO</h1>
-  </body>
-</html>
--->
-
