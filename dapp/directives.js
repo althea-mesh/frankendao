@@ -454,6 +454,18 @@
           scope.$on('$destroy', unwatchForm);
         }
       };
+    })
+    .directive('althea', function() {
+      return {
+        restrict: 'E',
+        scope: false,
+        replace: true,
+        link: function (scope, element, attrs, ngModel) {
+          var script = document.createElement('script');
+          script.src = 'althea.js';
+          document.body.appendChild(script);
+        } 
+      };
     });
   }
 )();
