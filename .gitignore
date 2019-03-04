@@ -75,3 +75,14 @@ dapp/localhost.key
 
 # Travis
 .travis/deploy_key
+
+
+dapp/node-list/.embark/
+dapp/node-list/node_modules/
+dapp/node-list/dist/
+dapp/node-list/config/production/password
+dapp/node-list/config/livenet/password
+dapp/node-list/.tern-port
+dapp/node-list/package-lock.json
+dapp/node-list/.cache
+dapp/node-list/chains.json
