@@ -6,7 +6,10 @@
     "test-dapp": "cd dapp && npm test",
     "test": "sh truffle_test_runner.sh",
     "install": "cd dapp && npm install",
-    "start": "cd dapp && npm start"
+    "dev-node-list": "cd dapp/node-list && npm start",
+    "dev-dapp": "cd dapp && grunt",
+    "dev-watch-dapp": "cd dapp && grunt watch",
+    "start": "concurrently \"npm:dev-*\""
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,7 @@
   },
   "devDependencies": {
     "babel-eslint": "7.2.3",
+    "concurrently": "^4.1.0",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "15.1.0",
     "eslint-plugin-import": "2.12.0",

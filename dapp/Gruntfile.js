@@ -88,7 +88,7 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: ['partials/*.html', 'partials/modals/*.html'],
+        files: ['partials/*.html', 'partials/modals/*.html', 'dist/*'],
         tasks: ['ngtemplates'],
         options: {
           livereload: true,

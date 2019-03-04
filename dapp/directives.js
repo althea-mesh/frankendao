@@ -462,7 +462,7 @@
         replace: true,
         link: function (scope, element, attrs, ngModel) {
           var script = document.createElement('script');
-          script.src = 'althea.js';
+          script.src = 'node-list/dist/index.js';
           document.body.appendChild(script);
         } 
       };
