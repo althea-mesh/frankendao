@@ -4,8 +4,6 @@ import { AragonApp, Button, Text } from "@aragon/ui";
 import styled from "styled-components";
 import { Grid } from "react-flexbox-grid";
 import { translate } from "react-i18next";
-import Althea from "Embark/contracts/Althea";
-import EmbarkJS from "Embark/EmbarkJS";
 import web3Utils from "web3-utils";
 import { Address6 } from "ip-address";
 import BigInteger from "jsbn";
