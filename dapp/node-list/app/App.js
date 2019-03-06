@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { AragonApp, Button, Text } from "@aragon/ui";
 import styled from "styled-components";
 import { Grid } from "react-flexbox-grid";
-import { translate } from "react-i18next";
 import web3Utils from "web3-utils";
 import { Address6 } from "ip-address";
 import BigInteger from "jsbn";
@@ -14,7 +14,7 @@ import GenerateReport from "./components/GenerateReport";
 import SubscriptionFee from "./components/SubscriptionFee";
 
 import Nav from "./components/Nav";
-import althea, { Context } from "./althea";
+import althea from "./althea";
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -23,9 +23,10 @@ const AppContainer = styled(AragonApp)`
   margin-top: 80px;
 `;
 
-class App extends React.Component {
-  setSearch = event => {
-    let nodes = this.state.nodes;
+const App = () => {
+  let [t] = useTranslation();
+
+  let setSearch = event => {
     let filteredNodes = nodes;
 
     if (event.target.value) {
@@ -38,26 +39,16 @@ class App extends React.Component {
       filteredNodes = fuse.search(event.target.value);
     }
 
-    this.setState({ filteredNodes });
+    setFilteredNodes(filteredNodes);
   };
 
-  displaySidebar = key => {
-    this.setState({
-      [key]: true
-    });
-  };
+  let [page, setPage] = useState(null);
+  let [nodes, setNodes] = useState(null);
+  let [filteredNodes, setFilteredNodes] = useState(null);
+  let [generateReport, setGenerateReport] = useState(false);
+  let [subscriptionFee, setSubscriptionFee] = useState(false);
 
-  state = {
-    newNode: false,
-    subscriptionFee: false,
-    generateReport: false,
-    page: null,
-    nodes: [],
-    setSearch: this.setSearch,
-    displaySidebar: this.displaySidebar
-  };
-
-  getNodes = async () => {
+  let init = async () => {
     let count = await althea.getCountOfSubscribers();
 
     let nodes = [];
@@ -81,69 +72,75 @@ class App extends React.Component {
       return { ...node, nickname, ipAddress };
     });
 
-    this.setState({ nodes });
-    this.setState({ filteredNodes: nodes });
+    setNodes(nodes);
   };
 
-  async componentDidMount() {
-    await this.getNodes();
-  }
+  useEffect(() => init());
 
-  render() {
-    const Page = this.state.page;
-    const { app, nodes, appAddress, daoAddress } = this.props;
-    const { newNode, generateReport, subscriptionFee } = this.state;
+  const Page = page;
 
-    return (
-      <Context.Provider value={this.state}>
-        <div className="althea-react">
-          <AppContainer publicUrl={window.location.href}>
-            <Grid fluid>
-              <NewNode
-                opened={newNode}
-                daoAddress={daoAddress}
-                nodes={nodes}
-                handleClose={() => this.setState({ newNode: false })}
-              />
-              <GenerateReport
-                opened={generateReport}
-                handleClose={() => this.setState({ generateReport: false })}
-              />
-              <SubscriptionFee
-                opened={subscriptionFee}
-                handleClose={() => this.setState({ subscriptionFee: false })}
-              />
+  let displaySidebar = name => {
+    switch (name) {
+      case "subscriptionFee":
+        setSubscriptionFee(true);
+        break;
+      case "generateReport":
+        setGenerateReport(true);
+        break;
+      default:
+        return;
+    }
+  };
 
-              <div
-                style={{ background: "white", borderBottom: "1px solid #ddd" }}
+  return (
+    <Context.Provider value={(setSearch, displaySidebar)}>
+      <div className="althea-react">
+        <AppContainer publicUrl={window.location.href}>
+          <Grid fluid>
+            <NewNode
+              opened={newNode}
+              daoAddress={daoAddress}
+              nodes={nodes}
+              handleClose={() => setNewNode(false)}
+            />
+            <GenerateReport
+              opened={generateReport}
+              handleClose={() => setGenerateReport(false)}
+            />
+            <SubscriptionFee
+              opened={subscriptionFee}
+              handleClose={() => setSubscriptionFee(false)}
+            />
+
+            <div
+              style={{ background: "white", borderBottom: "1px solid #ddd" }}
+            >
+              <Text size="xxlarge">Althea</Text>
+              <Button
+                mode="strong"
+                style={{ float: "right", padding: "10px 40px" }}
+                onClick={() => {
+                  this.setState({ newNode: true });
+                }}
               >
-                <Text size="xxlarge">Althea</Text>
-                <Button
-                  mode="strong"
-                  style={{ float: "right", padding: "10px 40px" }}
-                  onClick={() => {
-                    this.setState({ newNode: true });
-                  }}
-                >
-                  New Node
-                </Button>
-                <Nav setPage={page => this.setState({ page })} />
-              </div>
-              {this.state.page && (
-                <Page
-                  app={app}
-                  nodes={nodes}
-                  appAddress={appAddress}
-                  daoAddress={daoAddress}
-                />
-              )}
-            </Grid>
-          </AppContainer>
-        </div>
-      </Context.Provider>
-    );
-  }
-}
+                New Node
+              </Button>
+              <Nav setPage={setPage} />
+            </div>
+            {this.state.page && (
+              <Page
+                app={app}
+                nodes={nodes}
+                appAddress={appAddress}
+                daoAddress={daoAddress}
+              />
+            )}
+          </Grid>
+        </AppContainer>
+      </div>
+    </Context.Provider>
+  );
+};
 
 App.propTypes = {
   app: PropTypes.object,
@@ -153,4 +150,4 @@ App.propTypes = {
   t: PropTypes.func
 };
 
-export default translate()(App);
+export default App;

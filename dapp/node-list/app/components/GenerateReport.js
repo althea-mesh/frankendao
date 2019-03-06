@@ -1,16 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button, DropDown, Field, SidePanel, TextInput } from '@aragon/ui';
-import { translate } from 'react-i18next';
-import { Row, Col } from 'react-flexbox-grid';
+import React from "react";
+import PropTypes from "prop-types";
+import { Button, DropDown, Field, SidePanel, TextInput } from "@aragon/ui";
+import { Row, Col } from "react-flexbox-grid";
 
 class GenerateReport extends React.Component {
   state = {
-    name: '',
+    name: "",
     type: 0,
     format: 0,
-    start: '01/01/19',
-    end: '12/31/19',
+    start: "01/01/19",
+    end: "12/31/19",
     columns: {
       address: false,
       nickname: false,
@@ -25,19 +24,20 @@ class GenerateReport extends React.Component {
     this.setState({ [name]: value });
   };
 
-  setType = i => this.setState({ type: i })
-  setFormat = i => this.setState({ format: i })
+  setType = i => this.setState({ type: i });
+  setFormat = i => this.setState({ format: i });
 
-  render () {
-    const types = ['Finance'];
-    const formats = ['CSV'];
+  render() {
+    const types = ["Finance"];
+    const formats = ["CSV"];
     const { handleClose, opened, t } = this.props;
     const { name, type, format, start, end, columns } = this.state;
 
     return (
       <SidePanel title="Generate Report" opened={opened} onClose={handleClose}>
-        <Field label={t('reportName')}>
-          <TextInput wide
+        <Field label={t("reportName")}>
+          <TextInput
+            wide
             type="text"
             name="name"
             onChange={this.onChange}
@@ -46,16 +46,12 @@ class GenerateReport extends React.Component {
         </Field>
         <Row>
           <Col xs={6}>
-            <Field label={t('reportType')}>
-              <DropDown
-                items={types}
-                active={type}
-                onChange={this.setType}
-              />
+            <Field label={t("reportType")}>
+              <DropDown items={types} active={type} onChange={this.setType} />
             </Field>
           </Col>
           <Col>
-            <Field label={t('fileType')}>
+            <Field label={t("fileType")}>
               <DropDown
                 items={formats}
                 active={format}
@@ -64,11 +60,12 @@ class GenerateReport extends React.Component {
             </Field>
           </Col>
         </Row>
-        <hr style={{ border: '1px solid #eee' }} />
+        <hr style={{ border: "1px solid #eee" }} />
         <Row>
           <Col xs={6}>
-            <Field label={t('periodStart')}>
-              <TextInput wide
+            <Field label={t("periodStart")}>
+              <TextInput
+                wide
                 type="text"
                 name="start"
                 onChange={this.onChange}
@@ -77,8 +74,9 @@ class GenerateReport extends React.Component {
             </Field>
           </Col>
           <Col>
-            <Field label={t('periodEnd')}>
-              <TextInput wide
+            <Field label={t("periodEnd")}>
+              <TextInput
+                wide
                 type="text"
                 name="end"
                 onChange={this.onChange}
@@ -109,11 +107,13 @@ class GenerateReport extends React.Component {
           <input id="reference" type="checkbox" value={columns.reference} />
           <label htmlFor="reference">Transaction Reference</label>
         </div>
-        <Button mode="strong" wide style={{ marginTop: 20 }}>Generate Report</Button>
+        <Button mode="strong" wide style={{ marginTop: 20 }}>
+          Generate Report
+        </Button>
       </SidePanel>
     );
   }
-};
+}
 
 GenerateReport.propTypes = {
   handleClose: PropTypes.func,
@@ -121,4 +121,4 @@ GenerateReport.propTypes = {
   t: PropTypes.func
 };
 
-export default translate()(GenerateReport);
+export default GenerateReport;

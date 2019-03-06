@@ -46,16 +46,12 @@ const Table = styled.table.attrs({
   }
 `;
 
-const td = styled.td`
-  word-break: break-word;
-`;
-
 const Blue = styled.div`
   background: #daeaef;
   height: 25px;
 `;
 
-const NodeList = translate()(({ app, daoAddress, handleAction, t }) => {
+const NodeList = ({ app, daoAddress, handleAction, t }) => {
   let fundsColor = funds => (funds > 0 ? "black" : "red");
   let trunc = (s, n) => `${s.substr(0, n)}...${s.substr(-n)}`;
 
@@ -165,7 +161,7 @@ const NodeList = translate()(({ app, daoAddress, handleAction, t }) => {
       }}
     </Context.Consumer>
   );
-});
+};
 
 NodeList.propTypes = {
   t: PropTypes.func

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import {
   Dropdown,
@@ -6,7 +7,6 @@ import {
   DropdownMenu,
   DropdownToggle
 } from "reactstrap";
-import { translate } from "react-i18next";
 import styled from "styled-components";
 import search from "../search.png";
 import { Context } from "../althea";
@@ -41,62 +41,49 @@ const StyledDropdownMenu = styled(DropdownMenu)`
   margin-top: 0px !important;
 `;
 
-class NodeListControls extends React.Component {
-  state = {
-    actionsOpen: false
-  };
+const NodeListControls = ({ setSearch }) => {
+  let [t] = useTranslation();
+  let [open, setOpen] = useState(false);
+  let app = useContext(AppContext);
 
-  toggleActions = () => {
-    this.setState({ actionsOpen: !this.state.actionsOpen });
-  };
-
-  render() {
-    return (
-      <Context.Consumer>
-        {state => (
-          <div className="d-flex justify-content-between">
-            <div className="input-group mb-3" style={{ width: 220 }}>
-              <SearchField onChange={state.setSearch} />
-              <div className="input-group-append">
-                <span className="input-group-text bg-white">
-                  <SearchIcon src={search} />
-                </span>
-              </div>
-            </div>
-            <div>
-              <Dropdown
-                isOpen={this.state.actionsOpen}
-                toggle={this.toggleActions}
-              >
-                <StyledDropdownToggle caret>Actions</StyledDropdownToggle>
-                <StyledDropdownMenu right>
-                  <DropdownItem
-                    onClick={() => {
-                      state.displaySidebar("subscriptionFee");
-                    }}
-                  >
-                    Update Subscription Fee
-                  </DropdownItem>
-                  <DropdownItem>Collect Bills</DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      state.displaySidebar("generateReport");
-                    }}
-                  >
-                    Generate Report
-                  </DropdownItem>
-                </StyledDropdownMenu>
-              </Dropdown>
-            </div>
-          </div>
-        )}
-      </Context.Consumer>
-    );
-  }
-}
+  return (
+    <div className="d-flex justify-content-between">
+      <div className="input-group mb-3" style={{ width: 220 }}>
+        <SearchField onChange={setSearch} />
+        <div className="input-group-append">
+          <span className="input-group-text bg-white">
+            <SearchIcon src={search} />
+          </span>
+        </div>
+      </div>
+      <div>
+        <Dropdown isOpen={open} toggle={() => setOpen(!open)}>
+          <StyledDropdownToggle caret>Actions</StyledDropdownToggle>
+          <StyledDropdownMenu right>
+            <DropdownItem
+              onClick={() => {
+                displaySidebar("subscriptionFee");
+              }}
+            >
+              Update Subscription Fee
+            </DropdownItem>
+            <DropdownItem>Collect Bills</DropdownItem>
+            <DropdownItem
+              onClick={() => {
+                displaySidebar("generateReport");
+              }}
+            >
+              Generate Report
+            </DropdownItem>
+          </StyledDropdownMenu>
+        </Dropdown>
+      </div>
+    </div>
+  );
+};
 
 NodeListControls.propTypes = {
   t: PropTypes.func
 };
 
-export default translate()(NodeListControls);
+export default NodeListControls;
