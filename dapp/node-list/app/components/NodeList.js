@@ -16,7 +16,8 @@ import { translate } from "react-i18next";
 import NodeStats from "./NodeStats";
 import NodeListControls from "./NodeListControls";
 import Blockies from "react-blockies";
-import { Contract } from "../Contract";
+import althea, { Context } from "../althea";
+import { Address6 } from "ip-address";
 
 const Table = styled.table.attrs({
   className: "table-responsive-sm"
@@ -58,8 +59,15 @@ const NodeList = translate()(({ app, daoAddress, handleAction, t }) => {
   let fundsColor = funds => (funds > 0 ? "black" : "red");
   let trunc = (s, n) => `${s.substr(0, n)}...${s.substr(-n)}`;
 
+  let hexIp = ip =>
+    "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
+
+  let removeNode = async node => {
+    await althea.deleteMember(hexIp(node.ipAddress), { gasLimit: 500000 });
+  };
+
   return (
-    <Contract.Consumer>
+    <Context.Consumer>
       {app => {
         let nodes = app.filteredNodes;
 
@@ -134,7 +142,7 @@ const NodeList = translate()(({ app, daoAddress, handleAction, t }) => {
                         </td>
                         <td>
                           <ContextMenu>
-                            <ContextMenuItem>
+                            <ContextMenuItem onClick={() => removeNode(node)}>
                               <IconRemove /> Remove Node
                             </ContextMenuItem>
                             <ContextMenuItem>
@@ -155,7 +163,7 @@ const NodeList = translate()(({ app, daoAddress, handleAction, t }) => {
           </div>
         );
       }}
-    </Contract.Consumer>
+    </Context.Consumer>
   );
 });
 

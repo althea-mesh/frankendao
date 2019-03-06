@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button, Field, SidePanel, Text, TextInput } from '@aragon/ui';
-import { translate } from 'react-i18next';
-import { Address6 } from 'ip-address';
-import styled from 'styled-components';
-import QrCode from 'qrcode.react';
-import { Contract } from '../Contract';
+import React from "react";
+import PropTypes from "prop-types";
+import { Button, Field, SidePanel, Text, TextInput } from "@aragon/ui";
+import { translate } from "react-i18next";
+import { Address6 } from "ip-address";
+import styled from "styled-components";
+import QrCode from "qrcode.react";
+import { Context } from "../althea";
 
 const FatTextInput = styled(TextInput)`
   padding: 8px;
 `;
 
 class NewNode extends React.Component {
-  static contextType = Contract;
+  static contextType = Context;
 
   state = {
-    fee: '',
+    fee: "",
     scanning: false,
     nodes: []
   };
@@ -36,13 +36,13 @@ class NewNode extends React.Component {
       scrollbars=0
     `;
 
-    let url = location.href.replace('index.html', '');
-    url += 'qrscan.html';
+    let url = location.href.replace("index.html", "");
+    url += "qrscan.html";
 
-    window.open(url, 'Scan QR Code', specs);
+    window.open(url, "Scan QR Code", specs);
 
     this.setState({ scanning: true });
-  }
+  };
 
   onChange = e => {
     const { name, value } = e.target;
@@ -50,22 +50,22 @@ class NewNode extends React.Component {
   };
 
   getIp = () => {
-    const subnet48 = '2001:dead:beef:';
+    const subnet48 = "2001:dead:beef:";
     let bytes = new Uint16Array(1);
     crypto.getRandomValues(bytes);
 
     let block64 = Array.from(bytes)[0].toString(16);
-    let ipAddress = subnet48 + block64 + '::/64';
+    let ipAddress = subnet48 + block64 + "::/64";
 
     if (this.ipExists(ipAddress)) {
       return this.getIp();
     }
 
     return ipAddress;
-  }
+  };
 
   hexIp = ip =>
-    '0x' + (new Address6(ip)).canonicalForm().replace(new RegExp(':', 'g'), '')
+    "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
 
   ipExists = ip => {
     let { nodes } = this.props;
@@ -74,24 +74,26 @@ class NewNode extends React.Component {
     }
 
     return false;
-  }
+  };
 
   messageHandler = ({ data }) => {
-    if (data.toString().startsWith('qr:')) { this.setState({ ethAddress: data.replace('qr:', ''), scanning: false }); }
-  }
+    if (data.toString().startsWith("qr:")) {
+      this.setState({ ethAddress: data.replace("qr:", ""), scanning: false });
+    }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ nodes: this.context.nodes });
   }
 
-  render () {
+  render() {
     const { handleClose, opened, t, daoAddress } = this.props;
     const { nickname, ethAddress } = this.state;
     const ipAddress = this.getIp();
 
     return (
-      <SidePanel title={t('newNode')} opened={opened} onClose={handleClose}>
-        <Field label={t('nodeNickname')}>
+      <SidePanel title={t("newNode")} opened={opened} onClose={handleClose}>
+        <Field label={t("nodeNickname")}>
           <FatTextInput
             type="text"
             name="nickname"
@@ -100,8 +102,8 @@ class NewNode extends React.Component {
           />
         </Field>
 
-        <Field label={t('customersEthereumAddress')}>
-          <Text.Block className="my-2">{t('scanTheQR')}</Text.Block>
+        <Field label={t("customersEthereumAddress")}>
+          <Text.Block className="my-2">{t("scanTheQR")}</Text.Block>
           <FatTextInput
             type="text"
             name="fee"
@@ -112,23 +114,30 @@ class NewNode extends React.Component {
           <Button mode="outline">Scan QR Code</Button>
         </Field>
 
-        <hr style={{ width: '100%', marginTop: 0 }} />
+        <hr style={{ width: "100%", marginTop: 0 }} />
 
         <div>
-          <Text size="large" weight="bold">{t('configureSubnet')}</Text>
+          <Text size="large" weight="bold">
+            {t("configureSubnet")}
+          </Text>
         </div>
 
         <div className="d-flex flex-wrap mt-2">
-          <Text.Block className="col p-0" dangerouslySetInnerHTML={{ __html: t('toAssign', { interpolation: { escapeValue: false } }) }}></Text.Block>
+          <Text.Block
+            className="col p-0"
+            dangerouslySetInnerHTML={{
+              __html: t("toAssign", { interpolation: { escapeValue: false } })
+            }}
+          />
           <div className="col text-right mt-2">
-            <QrCode value={
-              JSON.stringify({ daoAddress, ipAddress })}
-            size={180}
+            <QrCode
+              value={JSON.stringify({ daoAddress, ipAddress })}
+              size={180}
             />
           </div>
         </div>
 
-        <Field label={t('ipAddress')} style={{ marginTop: 10 }}>
+        <Field label={t("ipAddress")} style={{ marginTop: 10 }}>
           <Text>{ipAddress}</Text>
         </Field>
 
@@ -136,11 +145,13 @@ class NewNode extends React.Component {
           <Text>{daoAddress}</Text>
         </Field>
 
-        <Button mode="strong" wide style={{ marginTop: 20 }}>{t('addNode')}</Button>
+        <Button mode="strong" wide style={{ marginTop: 20 }}>
+          {t("addNode")}
+        </Button>
       </SidePanel>
     );
   }
-};
+}
 
 NewNode.propTypes = {
   t: PropTypes.func,

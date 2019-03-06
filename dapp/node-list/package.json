@@ -4,7 +4,7 @@
   "description": "",
   "main": "Gruntfile.js",
   "scripts": {
-    "start": "rm -rf .embark; embark run --nodashboard --nobrowser --noserver",
+    "start": "rm -rf .embark; embark run --nodashboard --nobrowser",
     "test": "embark test",
     "dev": "parcel serve app/index.html",
     "build": "embark build"
@@ -59,11 +59,13 @@
   },
   "eslintConfig": {
     "extends": "react-app",
-    "plugins": ["prettier"],
+    "plugins": [
+      "prettier"
+    ],
     "settings": {
       "react": {
         "version": "detect"
-      } 
+      }
     },
     "rules": {
       "prettier/prettier": "error"
