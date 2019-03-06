@@ -4,7 +4,7 @@
   "description": "",
   "main": "Gruntfile.js",
   "scripts": {
-    "start": "embark run --nodashboard",
+    "start": "rm -rf .embark; embark run --nodashboard --nobrowser --noserver",
     "test": "embark test",
     "dev": "parcel serve app/index.html",
     "build": "embark build"
