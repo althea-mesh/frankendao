@@ -44,7 +44,7 @@ const StyledDropdownMenu = styled(DropdownMenu)`
 const NodeListControls = ({ setSearch }) => {
   let [t] = useTranslation();
   let [open, setOpen] = useState(false);
-  let app = useContext(AppContext);
+  let { displaySidebar } = useContext(Context);
 
   return (
     <div className="d-flex justify-content-between">
@@ -65,7 +65,7 @@ const NodeListControls = ({ setSearch }) => {
                 displaySidebar("subscriptionFee");
               }}
             >
-              Update Subscription Fee
+              {t("updateSubscriptionFee")}
             </DropdownItem>
             <DropdownItem>Collect Bills</DropdownItem>
             <DropdownItem

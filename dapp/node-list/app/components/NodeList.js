@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import {
   ContextMenu,
@@ -12,7 +13,6 @@ import {
   Text
 } from "@aragon/ui";
 import styled from "styled-components";
-import { translate } from "react-i18next";
 import NodeStats from "./NodeStats";
 import NodeListControls from "./NodeListControls";
 import Blockies from "react-blockies";
@@ -51,7 +51,11 @@ const Blue = styled.div`
   height: 25px;
 `;
 
-const NodeList = ({ app, daoAddress, handleAction, t }) => {
+const NodeList = () => {
+  let [t] = useTranslation();
+  let { filteredNodes } = useContext(Context);
+  let nodes = filteredNodes;
+
   let fundsColor = funds => (funds > 0 ? "black" : "red");
   let trunc = (s, n) => `${s.substr(0, n)}...${s.substr(-n)}`;
 
@@ -63,103 +67,95 @@ const NodeList = ({ app, daoAddress, handleAction, t }) => {
   };
 
   return (
-    <Context.Consumer>
-      {app => {
-        let nodes = app.filteredNodes;
+    <div>
+      <NodeStats />
+      <NodeListControls />
 
-        return (
-          <div>
-            <NodeStats />
-            <NodeListControls handleAction={handleAction} />
+      {!nodes || !nodes.length ? (
+        <Text>{t("noNodes")}</Text>
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <th>{t("nickname")}</th>
+              <th>{t("ethAddress")}</th>
+              <th>{t("ipAddress")}</th>
+              <th className="text-right">{t("balance")}</th>
+              <th>{t("status")}</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {nodes.map((node, i) => {
+              let { nickname, ethAddress, ipAddress, bill } = node;
 
-            {!nodes || !nodes.length ? (
-              <Text>{t("noNodes")}</Text>
-            ) : (
-              <Table>
-                <thead>
-                  <tr>
-                    <th>{t("nickname")}</th>
-                    <th>{t("ethAddress")}</th>
-                    <th>{t("ipAddress")}</th>
-                    <th className="text-right">{t("balance")}</th>
-                    <th>{t("status")}</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {nodes.map((node, i) => {
-                    let { nickname, ethAddress, ipAddress, bill } = node;
-
-                    return (
-                      <tr key={i}>
-                        <td>
-                          <Text>{nickname}</Text>
-                        </td>
-                        <td>
-                          <Blue>
-                            <Blockies seed={ethAddress} size={8} scale={3} />
-                            <Text
-                              style={{
-                                display: "block",
-                                float: "right",
-                                marginLeft: 10,
-                                paddingTop: 5,
-                                paddingRight: 10
-                              }}
-                            >
-                              {trunc(ethAddress, 6)}
-                            </Text>
-                          </Blue>
-                        </td>
-                        <td>
-                          <Text>{ipAddress}</Text>
-                        </td>
-                        <td className="text-right">
-                          <Text color={fundsColor(bill.balance)}>
-                            {bill.balance} ETH
-                          </Text>
-                        </td>
-                        <td>
-                          <Text>
-                            {bill.balance > 1 ? (
-                              <IconCheck />
-                            ) : bill.balance > 0 ? (
-                              <IconError />
-                            ) : (
-                              <IconCross />
-                            )}
-                            &nbsp;
-                            {bill.balance > 1
-                              ? "On-track"
-                              : bill.balance > 0
-                              ? "Low balance"
-                              : "Insufficient funds"}
-                          </Text>
-                        </td>
-                        <td>
-                          <ContextMenu>
-                            <ContextMenuItem onClick={() => removeNode(node)}>
-                              <IconRemove /> Remove Node
-                            </ContextMenuItem>
-                            <ContextMenuItem>
-                              <IconTime />
-                              &nbsp; Send Billing Reminder
-                            </ContextMenuItem>
-                            <ContextMenuItem>
-                              <IconSettings /> View Node Details
-                            </ContextMenuItem>
-                          </ContextMenu>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-            )}
-          </div>
-        );
-      }}
-    </Context.Consumer>
+              return (
+                <tr key={i}>
+                  <td>
+                    <Text>{nickname}</Text>
+                  </td>
+                  <td>
+                    <Blue>
+                      <Blockies seed={ethAddress} size={8} scale={3} />
+                      <Text
+                        style={{
+                          display: "block",
+                          float: "right",
+                          marginLeft: 10,
+                          paddingTop: 5,
+                          paddingRight: 10
+                        }}
+                      >
+                        {trunc(ethAddress, 6)}
+                      </Text>
+                    </Blue>
+                  </td>
+                  <td>
+                    <Text>{ipAddress}</Text>
+                  </td>
+                  <td className="text-right">
+                    <Text color={fundsColor(bill.balance)}>
+                      {bill.balance} ETH
+                    </Text>
+                  </td>
+                  <td>
+                    <Text>
+                      {bill.balance > 1 ? (
+                        <IconCheck />
+                      ) : bill.balance > 0 ? (
+                        <IconError />
+                      ) : (
+                        <IconCross />
+                      )}
+                      &nbsp;
+                      {bill.balance > 1
+                        ? "On-track"
+                        : bill.balance > 0
+                        ? "Low balance"
+                        : "Insufficient funds"}
+                    </Text>
+                  </td>
+                  <td>
+                    <ContextMenu>
+                      <ContextMenuItem onClick={() => removeNode(node)}>
+                        <IconRemove /> Remove Node
+                      </ContextMenuItem>
+                      <ContextMenuItem>
+                        <IconTime />
+                        &nbsp; Send Billing Reminder
+                      </ContextMenuItem>
+                      <ContextMenuItem>
+                        <IconSettings /> View Node Details
+                      </ContextMenuItem>
+                    </ContextMenu>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      )}
+    </div>
   );
 };
 

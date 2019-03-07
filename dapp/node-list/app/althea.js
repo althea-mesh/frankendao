@@ -225,4 +225,5 @@ window.wallet = wallet;
 let althea = new ethers.Contract(contractAddress, abi, wallet);
 window.althea = althea;
 
+export const { utils } = ethers;
 export default althea;

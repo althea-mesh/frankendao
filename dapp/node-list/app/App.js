@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { AragonApp, Button, Text } from "@aragon/ui";
 import styled from "styled-components";
 import { Grid } from "react-flexbox-grid";
-import web3Utils from "web3-utils";
 import { Address6 } from "ip-address";
 import BigInteger from "jsbn";
 import Fuse from "fuse.js";
@@ -12,9 +11,9 @@ import Fuse from "fuse.js";
 import NewNode from "./components/NewNode";
 import GenerateReport from "./components/GenerateReport";
 import SubscriptionFee from "./components/SubscriptionFee";
+import NodeList from "./components/NodeList";
 
-import Nav from "./components/Nav";
-import althea from "./althea";
+import althea, { Context, utils } from "./althea";
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -27,8 +26,6 @@ const App = () => {
   let [t] = useTranslation();
 
   let setSearch = event => {
-    let filteredNodes = nodes;
-
     if (event.target.value) {
       let options = {
         threshold: 0.1,
@@ -36,20 +33,22 @@ const App = () => {
       };
       let fuse = new Fuse(nodes, options);
 
-      filteredNodes = fuse.search(event.target.value);
+      setFilteredNodes(fuse.search(event.target.value));
     }
-
-    setFilteredNodes(filteredNodes);
   };
 
-  let [page, setPage] = useState(null);
+  let [daoAddress, setDaoAddress] = useState("");
+
   let [nodes, setNodes] = useState(null);
   let [filteredNodes, setFilteredNodes] = useState(null);
+
+  let [newNode, setNewNode] = useState(false);
   let [generateReport, setGenerateReport] = useState(false);
   let [subscriptionFee, setSubscriptionFee] = useState(false);
 
   let init = async () => {
     let count = await althea.getCountOfSubscribers();
+    setDaoAddress("12345");
 
     let nodes = [];
     for (let i = 0; i < count; i++) {
@@ -64,7 +63,7 @@ const App = () => {
 
     nodes = nodes.map((node, i) => {
       let { nickname, ipAddress } = node;
-      nickname = web3Utils.toUtf8(nickname);
+      nickname = utils.toUtf8String(nickname);
       ipAddress =
         Address6.fromBigInteger(
           new BigInteger(ipAddress.substr(2), 16)
@@ -75,9 +74,10 @@ const App = () => {
     setNodes(nodes);
   };
 
-  useEffect(() => init());
-
-  const Page = page;
+  useEffect(() => {
+    init();
+    return;
+  }, []);
 
   let displaySidebar = name => {
     switch (name) {
@@ -92,8 +92,10 @@ const App = () => {
     }
   };
 
+  let store = { setSearch, displaySidebar, filteredNodes, daoAddress };
+
   return (
-    <Context.Provider value={(setSearch, displaySidebar)}>
+    <Context.Provider value={store}>
       <div className="althea-react">
         <AppContainer publicUrl={window.location.href}>
           <Grid fluid>
@@ -119,22 +121,12 @@ const App = () => {
               <Button
                 mode="strong"
                 style={{ float: "right", padding: "10px 40px" }}
-                onClick={() => {
-                  this.setState({ newNode: true });
-                }}
+                onClick={() => setNewNode(true)}
               >
-                New Node
+                {t("newNode")}
               </Button>
-              <Nav setPage={setPage} />
             </div>
-            {this.state.page && (
-              <Page
-                app={app}
-                nodes={nodes}
-                appAddress={appAddress}
-                daoAddress={daoAddress}
-              />
-            )}
+            <NodeList />
           </Grid>
         </AppContainer>
       </div>
@@ -145,7 +137,6 @@ const App = () => {
 App.propTypes = {
   app: PropTypes.object,
   nodes: PropTypes.array,
-  appAddress: PropTypes.string,
   daoAddress: PropTypes.string,
   t: PropTypes.func
 };

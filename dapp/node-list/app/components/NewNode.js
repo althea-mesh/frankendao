@@ -1,23 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { Button, Field, SidePanel, Text, TextInput } from "@aragon/ui";
-import { translate } from "react-i18next";
 import { Address6 } from "ip-address";
 import styled from "styled-components";
 import QrCode from "qrcode.react";
-import { Context } from "../althea";
+import QrReader from "react-qr-reader";
 
 const FatTextInput = styled(TextInput)`
   padding: 8px;
 `;
 
-const NewNode = () => {
+const NewNode = ({ opened, handleClose, daoAddress }) => {
   let [t] = useTranslation();
+
   let [nickname, setNickname] = useState("");
   let [ethAddress, setEthAddress] = useState("");
+  let [ipAddress, setIpAddress] = useState("");
 
-  getIp = () => {
+  useEffect(() => {
     const subnet48 = "2001:dead:beef:";
     let bytes = new Uint16Array(1);
     crypto.getRandomValues(bytes);
@@ -25,28 +26,19 @@ const NewNode = () => {
     let block64 = Array.from(bytes)[0].toString(16);
     let ipAddress = subnet48 + block64 + "::/64";
 
-    if (ipExists(ipAddress)) {
-      return getIp();
-    }
+    setIpAddress(ipAddress);
+  }, []);
 
-    return ipAddress;
-  };
-
-  hexIp = ip =>
+  let hexIp = ip =>
     "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
 
-  ipExists = ip => {
-    if (nodes) {
-      return nodes.findIndex(n => n.ipAddress === this.hexIp(ip)) > -1;
-    }
-
-    return false;
+  let handleScan = result => {
+    if (result) setEthAddress(result.replace("ethereum:", ""));
   };
 
-  messageHandler = ({ data }) => {
-    if (data.toString().startsWith("qr:")) {
-      this.setState({ ethAddress: data.replace("qr:", ""), scanning: false });
-    }
+  let submit = () => {
+    let address = hexIp(ipAddress);
+    console.log(address);
   };
 
   return (
@@ -71,6 +63,11 @@ const NewNode = () => {
         />
         <Button mode="outline">Scan QR Code</Button>
       </Field>
+      <QrReader
+        onError={e => console.log(e)}
+        onScan={handleScan}
+        style={{ width: "100%" }}
+      />
 
       <hr style={{ width: "100%", marginTop: 0 }} />
 
@@ -103,7 +100,7 @@ const NewNode = () => {
         <Text>{daoAddress}</Text>
       </Field>
 
-      <Button mode="strong" wide style={{ marginTop: 20 }}>
+      <Button mode="strong" wide style={{ marginTop: 20 }} onClick={submit}>
         {t("addNode")}
       </Button>
     </SidePanel>
@@ -114,8 +111,7 @@ NewNode.propTypes = {
   t: PropTypes.func,
   opened: PropTypes.bool,
   daoAddress: PropTypes.string,
-  handleClose: PropTypes.func,
-  nodes: PropTypes.array
+  handleClose: PropTypes.func
 };
 
 export default NewNode;

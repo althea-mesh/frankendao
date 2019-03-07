@@ -22,10 +22,10 @@ const pages = {
 const Nav = ({ setPage }) => {
   let [t] = useTranslation();
 
-  let [pagename, setPagename] = useState("nodeList");
+  let [name, setName] = useState("nodeList");
 
   let changePage = p => {
-    setPagename(p);
+    setName(p);
     setPage(pages[p]);
   };
 
@@ -33,13 +33,7 @@ const Nav = ({ setPage }) => {
     <div>
       {Object.keys(pages).map(p => {
         return (
-          <NavButton
-            key={p}
-            onClick={() => {
-              changePage(p);
-            }}
-            active={pagename === p}
-          >
+          <NavButton key={p} onClick={() => changePage(p)} active={name === p}>
             {t(p)}
           </NavButton>
         );
@@ -49,10 +43,7 @@ const Nav = ({ setPage }) => {
 };
 
 Nav.propTypes = {
-  i18n: PropTypes.object,
-  setPage: PropTypes.func,
-  mode: PropTypes.string,
-  t: PropTypes.func
+  setPage: PropTypes.func
 };
 
 export default Nav;

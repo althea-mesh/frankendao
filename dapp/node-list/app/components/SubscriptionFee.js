@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { Button, Field, Info, SidePanel, Text, TextInput } from "@aragon/ui";
 
-const SubscriptionFee = () => {
-  let [fee, setFee] = useState("");
+const SubscriptionFee = ({ handleClose, opened }) => {
+  let [t] = useTranslation();
 
-  const { handleClose, opened, t } = this.props;
+  let [fee, setFee] = useState("");
   const currentFee = 0.2;
 
   return (
