@@ -11,9 +11,18 @@ import Fuse from "fuse.js";
 import NewNode from "./components/NewNode";
 import GenerateReport from "./components/GenerateReport";
 import SubscriptionFee from "./components/SubscriptionFee";
+
 import NodeList from "./components/NodeList";
+import Settings from "./components/Settings";
+
+import Nav from "./components/Nav";
 
 import althea, { Context, utils } from "./althea";
+
+const pages = {
+  nodeList: NodeList,
+  settings: Settings
+};
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -45,6 +54,7 @@ const App = () => {
   let [newNode, setNewNode] = useState(false);
   let [generateReport, setGenerateReport] = useState(false);
   let [subscriptionFee, setSubscriptionFee] = useState(false);
+  let [page, setPage] = useState("nodeList");
 
   let init = async () => {
     let count = await althea.getCountOfSubscribers();
@@ -94,6 +104,14 @@ const App = () => {
 
   let store = { setSearch, displaySidebar, filteredNodes, daoAddress };
 
+  let navProps = {
+    page,
+    setPage,
+    pages: Object.keys(pages)
+  };
+
+  const Page = pages[page];
+
   return (
     <Context.Provider value={store}>
       <div className="althea-react">
@@ -125,8 +143,9 @@ const App = () => {
               >
                 {t("newNode")}
               </Button>
+              <Nav {...navProps} />
             </div>
-            <NodeList />
+            <Page />
           </Grid>
         </AppContainer>
       </div>

@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { Button } from "@aragon/ui";
 import styled from "styled-components";
-
-import NodeList from "./NodeList";
-import Settings from "./Settings";
 
 const NavButton = styled(Button)`
   border-left: none;
@@ -14,30 +11,16 @@ const NavButton = styled(Button)`
   border-bottom: ${props => (props.active ? "5px solid #37CFCB" : "none")};
 `;
 
-const pages = {
-  nodeList: NodeList,
-  settings: Settings
-};
-
-const Nav = ({ setPage }) => {
+const Nav = ({ page, pages, setPage }) => {
   let [t] = useTranslation();
-
-  let [name, setName] = useState("nodeList");
-
-  let changePage = p => {
-    setName(p);
-    setPage(pages[p]);
-  };
 
   return (
     <div>
-      {Object.keys(pages).map(p => {
-        return (
-          <NavButton key={p} onClick={() => changePage(p)} active={name === p}>
-            {t(p)}
-          </NavButton>
-        );
-      })}
+      {pages.map(p => (
+        <NavButton key={p} onClick={() => setPage(p)} active={page === p}>
+          {t(p)}
+        </NavButton>
+      ))}
     </div>
   );
 };

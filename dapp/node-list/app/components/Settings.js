@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import { Button, DropDown, Text, TextInput } from "@aragon/ui";
+import { DropDown, Text, TextInput } from "@aragon/ui";
 import styled from "styled-components";
 
 const locales = ["EN", "ES"];
@@ -34,12 +34,12 @@ const InputGroup = styled.div`
 const Settings = () => {
   let [t, i18n] = useTranslation();
 
-  let [language, setLanguage] = useState(0);
+  let [index, setIndex] = useState(0);
   let [threshold, setThreshold] = useState(0.3);
-  let [locale, setLocale] = useState("EN");
 
-  setLocale = i => {
+  let setLocale = i => {
     let locale = locales[i];
+    setIndex(i);
     i18n.changeLanguage(locale.toLowerCase());
   };
 
@@ -47,26 +47,15 @@ const Settings = () => {
     <div style={{ marginTop: 30 }}>
       <Text size="large">{t("language")}</Text>
       <Spacer />
-      <Text.Block>
-        This will be the default language for display purposes.
-      </Text.Block>
+      <Text.Block>{t("defaultLanguage")}</Text.Block>
       <Spacer />
 
-      <DropDown
-        items={locales}
-        active={locale}
-        onChange={e => setLanguage(e.target.value)}
-      />
+      <DropDown items={locales} active={index} onChange={setLocale} />
       <Spacer />
-      <Spacer />
-      <Button mode="strong">Submit Changes</Button>
       <Spacer />
       <Text size="large">Low Balance Threshold</Text>
       <Spacer />
-      <Text.Block>
-        When a nodes balance is equal to or below this level, it will be
-        considered a low balance.
-      </Text.Block>
+      <Text.Block>{t("lowBalance")}</Text.Block>
       <Spacer />
       <InputGroup>
         <TextInput

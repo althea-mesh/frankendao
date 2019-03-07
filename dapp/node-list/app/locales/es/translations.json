@@ -1,4 +1,6 @@
 {
+  "defaultLanguage": "Este será el idioma predeterminado para fines de visualización.",
+  "lowBalance": "Cuando un saldo de nodos es igual o inferior a este nivel, se considerará un saldo bajo.", 
   "scanQr": "Escanee este código QR desde el panel del enrutador del nodo para asignar las direcciones IP y de contrato",
   "daoAddress": "Dirección de la organización",
   "ethAddress": "Dirección de ethereum",
