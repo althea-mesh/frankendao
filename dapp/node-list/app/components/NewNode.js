@@ -17,6 +17,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
   let [nickname, setNickname] = useState("");
   let [ethAddress, setEthAddress] = useState("");
   let [ipAddress, setIpAddress] = useState("");
+  let [scanning, setScanning] = useState(false);
 
   useEffect(() => {
     const subnet48 = "2001:dead:beef:";
@@ -33,7 +34,10 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
     "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
 
   let handleScan = result => {
-    if (result) setEthAddress(result.replace("ethereum:", ""));
+    if (result) {
+      setEthAddress(result.replace("ethereum:", ""));
+      setScanning(false);
+    }
   };
 
   let submit = () => {
@@ -61,13 +65,17 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
           value={ethAddress}
           style={{ marginRight: 15 }}
         />
-        <Button mode="outline">Scan QR Code</Button>
+        <Button mode="outline" onClick={() => setScanning(true)}>
+          Scan QR Code
+        </Button>
       </Field>
-      <QrReader
-        onError={e => console.log(e)}
-        onScan={handleScan}
-        style={{ width: "100%" }}
-      />
+      {scanning && (
+        <QrReader
+          onError={console.log}
+          onScan={handleScan}
+          style={{ width: "100%" }}
+        />
+      )}
 
       <hr style={{ width: "100%", marginTop: 0 }} />
 
