@@ -34,15 +34,15 @@ const AppContainer = styled(AragonApp)`
 const App = () => {
   let [t] = useTranslation();
 
-  let setSearch = event => {
-    if (event.target.value) {
+  let setSearch = e => {
+    if (e.target.value) {
       let options = {
         threshold: 0.1,
         keys: ["ipAddress", "ethAddress", "nickname"]
       };
       let fuse = new Fuse(nodes, options);
 
-      setFilteredNodes(fuse.search(event.target.value));
+      setFilteredNodes(fuse.search(e.target.value));
     }
   };
 
@@ -73,7 +73,8 @@ const App = () => {
 
     nodes = nodes.map((node, i) => {
       let { nickname, ipAddress } = node;
-      nickname = utils.toUtf8String(nickname);
+      /*eslint-disable-next-line*/
+      nickname = utils.toUtf8String(nickname).replace(/\u0000/g, "");
       ipAddress =
         Address6.fromBigInteger(
           new BigInteger(ipAddress.substr(2), 16)
@@ -82,6 +83,7 @@ const App = () => {
     });
 
     setNodes(nodes);
+    setFilteredNodes(nodes);
   };
 
   useEffect(() => {
