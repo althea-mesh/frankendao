@@ -7,7 +7,7 @@
   "scripts": {
     "start": "rm -rf .embark; embark run --nodashboard --nobrowser",
     "test": "embark test",
-    "dev": "parcel serve app/index.html",
+    "dev": "parcel serve app/index.html --no-cache" ,
     "build": "embark build"
   },
   "author": "",
