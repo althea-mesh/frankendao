@@ -16,7 +16,7 @@ import styled from "styled-components";
 import NodeStats from "./NodeStats";
 import NodeListControls from "./NodeListControls";
 import Blockies from "react-blockies";
-import althea, { Context } from "../althea";
+import althea, { Context, utils } from "../althea";
 import { Address6 } from "ip-address";
 
 const Table = styled.table.attrs({
@@ -87,7 +87,14 @@ const NodeList = () => {
           </thead>
           <tbody>
             {nodes.map((node, i) => {
-              let { nickname, ethAddress, ipAddress, bill } = node;
+              let {
+                nickname,
+                ethAddress,
+                ipAddress,
+                bill: { balance }
+              } = node;
+
+              balance = utils.formatEther(balance);
 
               return (
                 <tr key={i}>
@@ -114,23 +121,21 @@ const NodeList = () => {
                     <Text>{ipAddress}</Text>
                   </td>
                   <td className="text-right">
-                    <Text color={fundsColor(bill.balance)}>
-                      {bill.balance} ETH
-                    </Text>
+                    <Text color={fundsColor(balance)}>{balance} ETH</Text>
                   </td>
                   <td>
                     <Text>
-                      {bill.balance > 1 ? (
+                      {balance > 1 ? (
                         <IconCheck />
-                      ) : bill.balance > 0 ? (
+                      ) : balance > 0 ? (
                         <IconError />
                       ) : (
                         <IconCross />
                       )}
                       &nbsp;
-                      {bill.balance > 1
+                      {balance > 1
                         ? "On-track"
-                        : bill.balance > 0
+                        : balance > 0
                         ? "Low balance"
                         : "Insufficient funds"}
                     </Text>

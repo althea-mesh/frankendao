@@ -66,19 +66,22 @@ const App = () => {
       let user = await althea.userMapping(ipAddress);
       let ethAddress = user.ethAddr;
       let nickname = user.nick;
-      let bill = (await althea.billMapping(ethAddress)).balance;
+      let bill = await althea.billMapping(ethAddress);
       let node = { nickname, bill, ethAddress, ipAddress };
       nodes.push(node);
     }
 
     nodes = nodes.map((node, i) => {
       let { nickname, ipAddress } = node;
+
       /*eslint-disable-next-line*/
       nickname = utils.toUtf8String(nickname).replace(/\u0000/g, "");
+
       ipAddress =
         Address6.fromBigInteger(
           new BigInteger(ipAddress.substr(2), 16)
         ).correctForm() + "/64";
+
       return { ...node, nickname, ipAddress };
     });
 

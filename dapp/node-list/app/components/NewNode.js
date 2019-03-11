@@ -6,6 +6,7 @@ import { Address6 } from "ip-address";
 import styled from "styled-components";
 import QrCode from "qrcode.react";
 import QrReader from "react-qr-reader";
+import althea, { utils } from "../althea";
 
 const FatTextInput = styled(TextInput)`
   padding: 8px;
@@ -30,6 +31,8 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
     setIpAddress(ipAddress);
   }, []);
 
+  let hex = s => utils.hexDataSlice(utils.formatBytes32String(s), 0, 16);
+
   let hexIp = ip =>
     "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
 
@@ -41,8 +44,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
   };
 
   let submit = () => {
-    let address = hexIp(ipAddress);
-    console.log(address);
+    althea.addMember(ethAddress, hexIp(ipAddress), hex(nickname));
   };
 
   return (
@@ -65,7 +67,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
           value={ethAddress}
           style={{ marginRight: 15 }}
         />
-        <Button mode="outline" onClick={() => setScanning(true)}>
+        <Button mode="outline" onClick={() => setScanning(!scanning)}>
           Scan QR Code
         </Button>
       </Field>
