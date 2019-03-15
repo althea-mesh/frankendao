@@ -44,22 +44,22 @@ module.exports = {
     ethereumClientName: "geth", // Can be geth or parity (default:geth)
     //ethereumClientBin: "geth",  // path to the client binary. Useful if it is not in the global PATH
     networkType: "custom", // Can be: testnet, rinkeby, livenet or custom, in which case, it will use the specified networkId
-    networkId: 1337, // Network id used when networkType is custom
+    networkId: 1339, // Network id used when networkType is custom
     isDev: true, // Uses and ephemeral proof-of-authority network with a pre-funded developer account, mining enabled
     datadir: ".embark/development/datadir", // Data directory for the databases and keystore (Geth 1.8.15 and Parity 2.0.4 can use the same base folder, till now they does not conflict with each other)
-    mineWhenNeeded: true, // Uses our custom script (if isDev is false) to mine only when needed
+    mineWhenNeeded: false, // Uses our custom script (if isDev is false) to mine only when needed
     nodiscover: true, // Disables the peer discovery mechanism (manual peer addition)
     maxpeers: 0, // Maximum number of network peers (network disabled if set to 0) (default: 25)
     proxy: true, // Proxy is used to present meaningful information about transactions
     targetGasLimit: 8000000, // Target gas limit sets the artificial target gas floor for the blocks to mine
-    simulatorBlocktime: 0 // Specify blockTime in seconds for automatic mining. Default is 0 and no auto-mining.
+    simulatorBlocktime: 5 // Specify blockTime in seconds for automatic mining. Default is 0 and no auto-mining.
   },
 
   // merges with the settings in default
   // used with "embark run privatenet" and/or "embark blockchain privatenet"
   privatenet: {
     networkType: "custom",
-    networkId: 1337,
+    networkId: 1338,
     isDev: false,
     datadir: ".embark/privatenet/datadir",
     // -- mineWhenNeeded --
@@ -93,7 +93,7 @@ module.exports = {
   privateparitynet: {
     ethereumClientName: "parity",
     networkType: "custom",
-    networkId: 1337,
+    networkId: 1437,
     isDev: false,
     genesisBlock: "config/privatenet/genesis-parity.json", // Genesis block to initiate on first creation of a development node
     datadir: ".embark/privatenet/datadir",

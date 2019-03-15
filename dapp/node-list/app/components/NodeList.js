@@ -94,7 +94,8 @@ const NodeList = () => {
                 bill: { balance }
               } = node;
 
-              balance = utils.formatEther(balance);
+              // balance = utils.formatEther(balance);
+              balance = balance.toString();
 
               return (
                 <tr key={i}>

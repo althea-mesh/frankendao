@@ -51,7 +51,7 @@ module.exports = {
       Althea: {
         args: ["$MultiSigWallet"],
         onDeploy: [
-          `Althea.methods.addMember('$accounts[1]', '0x2001deadbeefbf0aa000000000000000', '0x4465626f726168000000000000000000').send()`,
+          `Althea.methods.addMember('$accounts[1]', '0x2001deadbeefbf0a0000000000000000', '0x4164616d000000000000000000000000').send()`,
           `Althea.methods.addMember('$accounts[2]', '0x2001deadbeefbf0d0000000000000000', '0x4465626f726168000000000000000000').send()`,
           `Althea.methods.addMember('$accounts[3]', '0x2001deadbeefbf0e0000000000000000', '0x53656261730000000000000000000000').send()`,
           `Althea.methods.addBill('$accounts[1]').send({"value": 1000000000000000000})`,

@@ -44,7 +44,9 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
   };
 
   let submit = () => {
-    althea.addMember(ethAddress, hexIp(ipAddress), hex(nickname));
+    althea.addMember(ethAddress, hexIp(ipAddress), hex(nickname), {
+      gasLimit: 500000
+    });
   };
 
   return (

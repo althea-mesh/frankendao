@@ -56,6 +56,8 @@ const App = () => {
   let [subscriptionFee, setSubscriptionFee] = useState(false);
   let [page, setPage] = useState("nodeList");
 
+  let [blockCount, setBlockCount] = useState(0);
+
   let init = async () => {
     let count = await althea.getCountOfSubscribers();
     setDaoAddress("12345");
@@ -91,7 +93,10 @@ const App = () => {
 
   useEffect(() => {
     init();
-    return;
+    let poll = setInterval(async () => {
+      setBlockCount(await althea.provider.getBlockNumber());
+    }, 1000);
+    return () => clearInterval(poll);
   }, []);
 
   let displaySidebar = name => {
@@ -149,6 +154,7 @@ const App = () => {
                 {t("newNode")}
               </Button>
               <Nav {...navProps} />
+              <div>{blockCount}</div>
             </div>
             <Page />
           </Grid>
