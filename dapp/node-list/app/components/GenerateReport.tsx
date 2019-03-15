@@ -1,27 +1,27 @@
-import React, { FunctionComponent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Button, DropDown, Field, SidePanel, TextInput } from '@aragon/ui'
-import { Row, Col } from 'react-flexbox-grid'
+import React, { FunctionComponent, useState } from 'react'
+import { Col, Row } from 'react-flexbox-grid'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   handleClose: () => void
-  opened: boolean
+  opened: boolean,
 }
 
 const GenerateReport: FunctionComponent<Props> = ({ handleClose, opened }) => {
-  let [t] = useTranslation()
+  const [t] = useTranslation()
 
-  let [name, setName] = useState('')
-  let [type, setType] = useState(0)
-  let [format, setFormat] = useState(0)
-  let [start, setStart] = useState('')
-  let [end, setEnd] = useState('')
+  const [name, setName] = useState('')
+  const [type, setType] = useState(0)
+  const [format, setFormat] = useState(0)
+  const [start, setStart] = useState('')
+  const [end, setEnd] = useState('')
 
-  let [address, setAddress] = useState(false)
-  let [nickname, setNickname] = useState(false)
-  let [amount, setAmount] = useState(false)
-  let [date, setDate] = useState(false)
-  let [reference, setReference] = useState(false)
+  const [address, setAddress] = useState(false)
+  const [nickname, setNickname] = useState(false)
+  const [amount, setAmount] = useState(false)
+  const [date, setDate] = useState(false)
+  const [reference, setReference] = useState(false)
 
   const types = ['Finance']
   const formats = ['CSV']

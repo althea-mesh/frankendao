@@ -7,8 +7,8 @@ import {
   DropdownToggle,
 } from 'reactstrap'
 import styled from 'styled-components'
-import search from '../search.png'
 import { Context } from '../althea'
+import search from '../search.png'
 
 const SearchIcon = styled.img`
   width: 20px;
@@ -41,9 +41,9 @@ const StyledDropdownMenu = styled(DropdownMenu)`
 `
 
 const NodeListControls = () => {
-  let [t] = useTranslation()
-  let [open, setOpen] = useState(false)
-  let { displaySidebar, setSearch } = useContext(Context)
+  const [t] = useTranslation()
+  const [open, setOpen] = useState(false)
+  const { displaySidebar, setSearch } = useContext(Context)
 
   return (
     <div className="d-flex justify-content-between">

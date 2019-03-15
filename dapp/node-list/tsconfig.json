@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "plugins": [{ "name": "tslint-language-service"}]
   },
   "include": ["app"]
 }

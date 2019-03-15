@@ -9,6 +9,7 @@ import {
   IconTime,
   Text,
 } from '@aragon/ui'
+import { utils } from 'ethers'
 import { Address6 } from 'ip-address'
 import React, { FunctionComponent, useContext } from 'react'
 import Blockies from 'react-blockies'
@@ -18,7 +19,6 @@ import althea, { Context } from '../althea'
 import { Node } from '../types'
 import NodeListControls from './NodeListControls'
 import NodeStats from './NodeStats'
-import { utils } from 'ethers'
 
 const { BigNumber } = utils
 

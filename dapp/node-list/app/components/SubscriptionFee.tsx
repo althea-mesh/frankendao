@@ -1,17 +1,17 @@
+import { Button, Field, Info, SidePanel, Text, TextInput } from '@aragon/ui'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Field, Info, SidePanel, Text, TextInput } from '@aragon/ui'
 import althea, { utils } from '../althea'
 
 const blocksPerMonth = 30 * 24 * 60 * 6
 
 const SubscriptionFee = ({ handleClose, opened }) => {
-  let [t] = useTranslation()
+  const [t] = useTranslation()
 
-  let [fee, setFee] = useState('')
-  let [currentFee, setCurrentFee] = useState(0)
+  const [fee, setFee] = useState('')
+  const [currentFee, setCurrentFee] = useState(0)
 
-  let init = async () => {
+  const init = async () => {
     let fee = await althea.perBlockFee()
     fee = fee.mul(blocksPerMonth)
     setCurrentFee(utils.formatEther(fee))
@@ -22,7 +22,7 @@ const SubscriptionFee = ({ handleClose, opened }) => {
     return
   }, [])
 
-  let submit = () => {
+  const submit = () => {
     althea.setPerBlockFee(utils.parseEther(fee.toString()).div(blocksPerMonth))
   }
 
@@ -49,7 +49,7 @@ const SubscriptionFee = ({ handleClose, opened }) => {
         <TextInput
           type="text"
           name="fee"
-          onChange={e => setFee(e.target.value)}
+          onChange={(e) => setFee(e.target.value)}
           value={fee}
         />
         <Text style={{ color: '#ccc', fontSize: '12px', marginLeft: 10 }}>

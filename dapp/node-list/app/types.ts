@@ -2,16 +2,16 @@ import { utils } from 'ethers'
 import { FunctionComponent } from 'react'
 
 export type Bill = {
-  balance: utils.BigNumber
+  balance: utils.BigNumber,
 }
 
 export type Node = {
   ipAddress: string
   ethAddress: string
   nickname: string
-  bill: Bill
+  bill: Bill,
 }
 
 export type PageMap = {
-  [key: string]: FunctionComponent
+  [key: string]: FunctionComponent,
 }

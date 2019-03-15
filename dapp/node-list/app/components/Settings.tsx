@@ -1,6 +1,6 @@
+import { DropDown, Text, TextInput } from '@aragon/ui'
 import React, { FunctionComponent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DropDown, Text, TextInput } from '@aragon/ui'
 import styled from 'styled-components'
 
 const locales = ['EN', 'ES']
@@ -31,18 +31,18 @@ const InputGroup = styled.div`
 `
 
 const Settings: FunctionComponent = () => {
-  let [t, i18n] = useTranslation()
+  const [t, i18n] = useTranslation()
 
-  let [index, setIndex] = useState(0)
-  let [threshold, setThreshold] = useState(0.3)
+  const [index, setIndex] = useState(0)
+  const [threshold, setThreshold] = useState(0.3)
 
-  let setLocale = (i: number) => {
-    let locale = locales[i]
+  const setLocale = (i: number) => {
+    const locale = locales[i]
     setIndex(i)
     i18n.changeLanguage(locale.toLowerCase())
   }
 
-  let changeThreshold = (e: React.FormEvent<HTMLInputElement>) =>
+  const changeThreshold = (e: React.FormEvent<HTMLInputElement>) =>
     setThreshold(parseFloat(e.currentTarget.value))
 
   return (

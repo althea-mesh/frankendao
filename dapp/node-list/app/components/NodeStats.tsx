@@ -9,7 +9,7 @@ const Title = styled.h4`
 
 const Value = styled.h1`
   font-size: 24px;
-  color: ${props => (props.color ? props.color : 'black')};
+  color: ${(props) => (props.color ? props.color : 'black')};
 `
 
 const Aside = styled.span`

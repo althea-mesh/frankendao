@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Button, Field, SidePanel, Text, TextInput } from '@aragon/ui'
 import { Address6 } from 'ip-address'
-import styled from 'styled-components'
 import QrCode from 'qrcode.react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import QrReader from 'react-qr-reader'
+import styled from 'styled-components'
 import althea, { utils } from '../althea'
 
 const FatTextInput = styled(TextInput)`
@@ -14,7 +14,7 @@ const FatTextInput = styled(TextInput)`
 type Props = {
   daoAddress: string
   handleClose: () => void
-  opened: boolean
+  opened: boolean,
 }
 
 const NewNode: FunctionComponent<Props> = ({
@@ -22,47 +22,47 @@ const NewNode: FunctionComponent<Props> = ({
   handleClose,
   opened,
 }) => {
-  let [t] = useTranslation()
+  const [t] = useTranslation()
 
-  let [nickname, setNickname] = useState('')
-  let [ethAddress, setEthAddress] = useState('')
-  let [ipAddress, setIpAddress] = useState('')
-  let [scanning, setScanning] = useState(false)
+  const [nickname, setNickname] = useState('')
+  const [ethAddress, setEthAddress] = useState('')
+  const [ipAddress, setIpAddress] = useState('')
+  const [scanning, setScanning] = useState(false)
 
   useEffect(() => {
     const subnet48 = '2001:dead:beef:'
-    let bytes = new Uint16Array(1)
+    const bytes = new Uint16Array(1)
     crypto.getRandomValues(bytes)
 
-    let block64 = Array.from(bytes)[0].toString(16)
-    let ipAddress = subnet48 + block64 + '::/64'
+    const block64 = Array.from(bytes)[0].toString(16)
+    const ipAddress = subnet48 + block64 + '::/64'
 
     setIpAddress(ipAddress)
   }, [])
 
-  let hex = (s: string) =>
+  const hex = (s: string) =>
     utils.hexDataSlice(utils.formatBytes32String(s), 0, 16)
 
-  let hexIp = (ip: string) =>
+  const hexIp = (ip: string) =>
     '0x' + new Address6(ip).canonicalForm().replace(new RegExp(':', 'g'), '')
 
-  let handleScan = (data: string | null) => {
+  const handleScan = (data: string | null) => {
     if (data) {
       setEthAddress(data.replace('ethereum:', ''))
       setScanning(false)
     }
   }
 
-  let submit = () => {
+  const submit = () => {
     althea.addMember(ethAddress, hexIp(ipAddress), hex(nickname), {
       gasLimit: 500000,
     })
   }
 
-  let changeNickname = (e: React.FormEvent<HTMLInputElement>) =>
+  const changeNickname = (e: React.FormEvent<HTMLInputElement>) =>
     setNickname(e.currentTarget.value)
 
-  let changeEthAddress = (e: React.FormEvent<HTMLInputElement>) =>
+  const changeEthAddress = (e: React.FormEvent<HTMLInputElement>) =>
     setEthAddress(e.currentTarget.value)
 
   return (
