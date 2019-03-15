@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import {
@@ -51,7 +51,7 @@ const Blue = styled.div`
   height: 25px;
 `;
 
-const NodeList = () => {
+const NodeList: FunctionComponent = () => {
   let [t] = useTranslation();
   let { filteredNodes } = useContext(Context);
   let nodes = filteredNodes;

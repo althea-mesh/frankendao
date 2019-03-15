@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { AragonApp, Button, Text } from "@aragon/ui";
 import styled from "styled-components";
 import { Grid } from "react-flexbox-grid";
 import { Address6 } from "ip-address";
-import BigInteger from "jsbn";
-import Fuse from "fuse.js";
+import { BigInteger } from "jsbn";
+import Fuse, { FuseOptions } from "fuse.js";
 
 import NewNode from "./components/NewNode";
 import GenerateReport from "./components/GenerateReport";
@@ -19,7 +19,11 @@ import Nav from "./components/Nav";
 
 import althea, { Context, utils } from "./althea";
 
-const pages = {
+interface PageMap {
+  [key: string]: FunctionComponent;
+}
+
+const pages: PageMap = {
   nodeList: NodeList,
   settings: Settings
 };
@@ -31,12 +35,18 @@ const AppContainer = styled(AragonApp)`
   margin-top: 80px;
 `;
 
-const App = () => {
+type Node = {
+  ipAddress: string;
+  ethAddress: string;
+  nickname: string;
+};
+
+const App: FunctionComponent = () => {
   let [t] = useTranslation();
 
   let setSearch = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.value) {
-      let options = {
+      let options: FuseOptions<Node> = {
         threshold: 0.1,
         keys: [
           { name: "ipAddress", weight: 0.1 },
@@ -45,15 +55,16 @@ const App = () => {
         ]
       };
       let fuse = new Fuse(nodes, options);
+      let nodeSearch = fuse.search(e.currentTarget.value);
 
-      setFilteredNodes(fuse.search(e.currentTarget.value));
+      setFilteredNodes(nodeSearch);
     }
   };
 
   let [daoAddress, setDaoAddress] = useState("");
 
-  let [nodes, setNodes] = useState([]);
-  let [filteredNodes, setFilteredNodes] = useState(null);
+  let [nodes, setNodes] = useState<Node[]>([]);
+  let [filteredNodes, setFilteredNodes] = useState<Node[]>([]);
 
   let [newNode, setNewNode] = useState(false);
   let [generateReport, setGenerateReport] = useState(false);
@@ -82,11 +93,9 @@ const App = () => {
 
       /*eslint-disable-next-line*/
       nickname = utils.toUtf8String(nickname).replace(/\u0000/g, "");
+      let hexIp: BigInteger = new BigInteger(ipAddress.substr(2), 16);
 
-      ipAddress =
-        Address6.fromBigInteger(
-          new BigInteger(ipAddress.substr(2), 16)
-        ).correctForm() + "/64";
+      ipAddress = Address6.fromBigInteger(hexIp).correctForm() + "/64";
 
       return { ...node, nickname, ipAddress };
     });
@@ -103,7 +112,7 @@ const App = () => {
     return () => clearInterval(poll);
   }, []);
 
-  let displaySidebar = name => {
+  let displaySidebar = (name: string) => {
     switch (name) {
       case "subscriptionFee":
         setSubscriptionFee(true);
@@ -134,7 +143,6 @@ const App = () => {
             <NewNode
               opened={newNode}
               daoAddress={daoAddress}
-              nodes={nodes}
               handleClose={() => setNewNode(false)}
             />
             <GenerateReport

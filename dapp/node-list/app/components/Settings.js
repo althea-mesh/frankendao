@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { DropDown, Text, TextInput } from "@aragon/ui";
@@ -31,7 +31,7 @@ const InputGroup = styled.div`
   }
 `;
 
-const Settings = () => {
+const Settings: FunctionComponent = () => {
   let [t, i18n] = useTranslation();
 
   let [index, setIndex] = useState(0);
