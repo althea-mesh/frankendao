@@ -45,7 +45,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
 
   let submit = () => {
     althea.addMember(ethAddress, hexIp(ipAddress), hex(nickname), {
-      gasLimit: 500000
+      gasLimit: 500000,
     });
   };
 
@@ -93,7 +93,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
         <Text.Block
           className="col p-0"
           dangerouslySetInnerHTML={{
-            __html: t("toAssign", { interpolation: { escapeValue: false } })
+            __html: t("toAssign", { interpolation: { escapeValue: false } }),
           }}
         />
         <div className="col text-right mt-2">
@@ -123,7 +123,7 @@ NewNode.propTypes = {
   t: PropTypes.func,
   opened: PropTypes.bool,
   daoAddress: PropTypes.string,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
 };
 
 export default NewNode;

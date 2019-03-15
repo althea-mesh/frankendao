@@ -72,7 +72,7 @@ const Settings: FunctionComponent = () => {
 
 Settings.propTypes = {
   i18n: PropTypes.object,
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default Settings;

@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useContext } from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -8,19 +5,23 @@ import {
   IconCross,
   IconError,
   IconRemove,
-  IconTime,
   IconSettings,
-  Text
+  IconTime,
+  Text,
 } from "@aragon/ui";
-import styled from "styled-components";
-import NodeStats from "./NodeStats";
-import NodeListControls from "./NodeListControls";
-import Blockies from "react-blockies";
-import althea, { Context, utils } from "../althea";
 import { Address6 } from "ip-address";
+import PropTypes from "prop-types";
+import React, { FunctionComponent, useContext } from "react";
+import Blockies from "react-blockies";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import althea, { Context, utils } from "../althea";
+import { Node } from "../types";
+import NodeListControls from "./NodeListControls";
+import NodeStats from "./NodeStats";
 
 const Table = styled.table.attrs({
-  className: "table-responsive-sm"
+  className: "table-responsive-sm",
 })`
   background: white;
   width: 100%;
@@ -52,17 +53,17 @@ const Blue = styled.div`
 `;
 
 const NodeList: FunctionComponent = () => {
-  let [t] = useTranslation();
-  let { filteredNodes } = useContext(Context);
-  let nodes = filteredNodes;
+  const [t] = useTranslation();
+  const { filteredNodes } = useContext(Context);
+  const nodes = filteredNodes;
 
-  let fundsColor = funds => (funds > 0 ? "black" : "red");
-  let trunc = (s, n) => `${s.substr(0, n)}...${s.substr(-n)}`;
+  const fundsColor = (funds: number) => (funds > 0 ? "black" : "red");
+  const trunc = (s: string, n: number) => `${s.substr(0, n)}...${s.substr(-n)}`;
 
-  let hexIp = ip =>
+  const hexIp = (ip: string) =>
     "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
 
-  let removeNode = async node => {
+  const removeNode = async (node: Node) => {
     await althea.deleteMember(hexIp(node.ipAddress), { gasLimit: 500000 });
   };
 
@@ -86,12 +87,12 @@ const NodeList: FunctionComponent = () => {
             </tr>
           </thead>
           <tbody>
-            {nodes.map((node, i) => {
+            {nodes.map((node: Node, i: number) => {
               let {
                 nickname,
                 ethAddress,
                 ipAddress,
-                bill: { balance }
+                bill: { balance },
               } = node;
 
               // balance = utils.formatEther(balance);
@@ -111,7 +112,7 @@ const NodeList: FunctionComponent = () => {
                           float: "right",
                           marginLeft: 10,
                           paddingTop: 5,
-                          paddingRight: 10
+                          paddingRight: 10,
                         }}
                       >
                         {trunc(ethAddress, 6)}
@@ -166,7 +167,7 @@ const NodeList: FunctionComponent = () => {
 };
 
 NodeList.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default NodeList;

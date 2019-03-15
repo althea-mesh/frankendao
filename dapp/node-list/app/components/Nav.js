@@ -26,7 +26,7 @@ const Nav = ({ page, pages, setPage }) => {
 };
 
 Nav.propTypes = {
-  setPage: PropTypes.func
+  setPage: PropTypes.func,
 };
 
 export default Nav;

@@ -5,7 +5,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle
+  DropdownToggle,
 } from "reactstrap";
 import styled from "styled-components";
 import search from "../search.png";
@@ -19,7 +19,7 @@ const SearchIcon = styled.img`
 const SearchField = styled.input.attrs({
   className: "form-control",
   type: "text",
-  placeholder: "Search nodes"
+  placeholder: "Search nodes",
 })`
   border-right: none;
   &::placeholder {
@@ -41,10 +41,10 @@ const StyledDropdownMenu = styled(DropdownMenu)`
   margin-top: 0px !important;
 `;
 
-const NodeListControls = ({ setSearch }) => {
+const NodeListControls = () => {
   let [t] = useTranslation();
   let [open, setOpen] = useState(false);
-  let { displaySidebar } = useContext(Context);
+  let { displaySidebar, setSearch } = useContext(Context);
 
   return (
     <div className="d-flex justify-content-between">
@@ -83,7 +83,7 @@ const NodeListControls = ({ setSearch }) => {
 };
 
 NodeListControls.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default NodeListControls;

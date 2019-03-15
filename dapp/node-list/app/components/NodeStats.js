@@ -18,7 +18,7 @@ const Aside = styled.span`
   font-weight: light;
 `;
 
-const NodeStats = ({ app, nodes }) => {
+const NodeStats = () => {
   return (
     <div className="w-100 d-flex flex-wrap justify-content-between bg-white border my-4 py-3 px-2 px-sm-5 text-center">
       <div style={{ minWidth: 130 }}>
@@ -52,7 +52,7 @@ const NodeStats = ({ app, nodes }) => {
 };
 
 NodeStats.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default NodeStats;

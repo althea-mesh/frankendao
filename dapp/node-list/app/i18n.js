@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 i18n.use(initReactI18next).init({
   resources: {
     en: { translations: require("./locales/en/translations.json") },
-    es: { translations: require("./locales/es/translations.json") }
+    es: { translations: require("./locales/es/translations.json") },
   },
   fallbackLng: "en",
 
@@ -13,12 +13,12 @@ i18n.use(initReactI18next).init({
   defaultNS: "translations",
 
   interpolation: {
-    escapeValue: false // not needed for react!!
+    escapeValue: false, // not needed for react!!
   },
 
   react: {
-    wait: true
-  }
+    wait: true,
+  },
 });
 
 export default i18n;

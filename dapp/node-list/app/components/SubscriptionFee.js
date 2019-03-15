@@ -68,7 +68,7 @@ const SubscriptionFee = ({ handleClose, opened }) => {
 SubscriptionFee.propTypes = {
   handleClose: PropTypes.func,
   opened: PropTypes.bool,
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default SubscriptionFee;

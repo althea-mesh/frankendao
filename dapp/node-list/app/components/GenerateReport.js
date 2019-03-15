@@ -131,7 +131,7 @@ const GenerateReport = ({ handleClose, opened }) => {
 GenerateReport.propTypes = {
   handleClose: PropTypes.func,
   opened: PropTypes.bool,
-  t: PropTypes.func
+  t: PropTypes.func,
 };
 
 export default GenerateReport;

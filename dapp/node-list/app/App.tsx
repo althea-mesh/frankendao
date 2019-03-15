@@ -1,139 +1,130 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import { AragonApp, Button, Text } from "@aragon/ui";
-import styled from "styled-components";
-import { Grid } from "react-flexbox-grid";
-import { Address6 } from "ip-address";
-import { BigInteger } from "jsbn";
-import Fuse, { FuseOptions } from "fuse.js";
+import { AragonApp, Button, Text } from '@aragon/ui'
+import Fuse, { FuseOptions } from 'fuse.js'
+import { Address6 } from 'ip-address'
+import { BigInteger } from 'jsbn'
+import PropTypes from 'prop-types'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { Grid } from 'react-flexbox-grid'
+import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+import { Node, PageMap } from './types'
 
-import NewNode from "./components/NewNode";
-import GenerateReport from "./components/GenerateReport";
-import SubscriptionFee from "./components/SubscriptionFee";
+import GenerateReport from './components/GenerateReport'
+import NewNode from './components/NewNode'
+import SubscriptionFee from './components/SubscriptionFee'
 
-import NodeList from "./components/NodeList";
-import Settings from "./components/Settings";
+import NodeList from './components/NodeList'
+import Settings from './components/Settings'
 
-import Nav from "./components/Nav";
+import Nav from './components/Nav'
 
-import althea, { Context, utils } from "./althea";
-
-interface PageMap {
-  [key: string]: FunctionComponent;
-}
+import althea, { Context, utils } from './althea'
 
 const pages: PageMap = {
   nodeList: NodeList,
-  settings: Settings
-};
+  settings: Settings,
+}
 
 const AppContainer = styled(AragonApp)`
   display: flex;
   align-content: flex-start;
   flex-direction: column;
   margin-top: 80px;
-`;
-
-type Node = {
-  ipAddress: string;
-  ethAddress: string;
-  nickname: string;
-};
+`
 
 const App: FunctionComponent = () => {
-  let [t] = useTranslation();
+  const [t] = useTranslation()
 
-  let setSearch = (e: React.FormEvent<HTMLInputElement>) => {
+  const setSearch = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.value) {
-      let options: FuseOptions<Node> = {
-        threshold: 0.1,
+      const options: FuseOptions<Node> = {
         keys: [
-          { name: "ipAddress", weight: 0.1 },
-          { name: "ethAddress", weight: 0.1 },
-          { name: "nickname", weight: 0.8 }
-        ]
-      };
-      let fuse = new Fuse(nodes, options);
-      let nodeSearch = fuse.search(e.currentTarget.value);
+          { name: 'ethAddress', weight: 0.1 },
+          { name: 'ipAddress', weight: 0.1 },
+          { name: 'nickname', weight: 0.8 },
+        ],
+        threshold: 0.1,
+      }
+      const fuse = new Fuse(nodes, options)
+      const nodeSearch = fuse.search(e.currentTarget.value)
 
-      setFilteredNodes(nodeSearch);
+      setFilteredNodes(nodeSearch)
     }
-  };
+  }
 
-  let [daoAddress, setDaoAddress] = useState("");
+  const [daoAddress, setDaoAddress] = useState('')
 
-  let [nodes, setNodes] = useState<Node[]>([]);
-  let [filteredNodes, setFilteredNodes] = useState<Node[]>([]);
+  const [nodes, setNodes] = useState<Node[]>([])
+  const [filteredNodes, setFilteredNodes] = useState<Node[]>([])
 
-  let [newNode, setNewNode] = useState(false);
-  let [generateReport, setGenerateReport] = useState(false);
-  let [subscriptionFee, setSubscriptionFee] = useState(false);
-  let [page, setPage] = useState("nodeList");
+  const [newNode, setNewNode] = useState(false)
+  const [generateReport, setGenerateReport] = useState(false)
+  const [subscriptionFee, setSubscriptionFee] = useState(false)
+  const [page, setPage] = useState('nodeList')
 
-  let [blockCount, setBlockCount] = useState(0);
+  const [blockCount, setBlockCount] = useState(0)
 
-  let init = async () => {
-    let count = await althea.getCountOfSubscribers();
-    setDaoAddress("12345");
+  const init = async () => {
+    const count = await althea.getCountOfSubscribers()
+    setDaoAddress('12345')
 
-    let nodes = [];
+    let initialNodes = []
     for (let i = 0; i < count; i++) {
-      let ipAddress = await althea.subnetSubscribers(i);
-      let user = await althea.userMapping(ipAddress);
-      let ethAddress = user.ethAddr;
-      let nickname = user.nick;
-      let bill = await althea.billMapping(ethAddress);
-      let node = { nickname, bill, ethAddress, ipAddress };
-      nodes.push(node);
+      const ipAddress = await althea.subnetSubscribers(i)
+      const user = await althea.userMapping(ipAddress)
+      const ethAddress = user.ethAddr
+      const nickname = user.nick
+      const bill = await althea.billMapping(ethAddress)
+      const node = { nickname, bill, ethAddress, ipAddress }
+      initialNodes.push(node)
     }
 
-    nodes = nodes.map((node, i) => {
-      let { nickname, ipAddress } = node;
+    initialNodes = initialNodes.map((node, i) => {
+      let { nickname, ipAddress } = node
 
       /*eslint-disable-next-line*/
-      nickname = utils.toUtf8String(nickname).replace(/\u0000/g, "");
-      let hexIp: BigInteger = new BigInteger(ipAddress.substr(2), 16);
+      nickname = utils.toUtf8String(nickname).replace(/\u0000/g, '')
+      const hexIp: BigInteger = new BigInteger(ipAddress.substr(2), 16)
 
-      ipAddress = Address6.fromBigInteger(hexIp).correctForm() + "/64";
+      ipAddress = Address6.fromBigInteger(hexIp).correctForm() + '/64'
 
-      return { ...node, nickname, ipAddress };
-    });
+      return { ...node, nickname, ipAddress }
+    })
 
-    setNodes(nodes);
-    setFilteredNodes(nodes);
-  };
+    setNodes(initialNodes)
+    setFilteredNodes(initialNodes)
+  }
 
   useEffect(() => {
-    init();
-    let poll = setInterval(async () => {
-      setBlockCount(await althea.provider.getBlockNumber());
-    }, 1000);
-    return () => clearInterval(poll);
-  }, []);
+    init()
+    const poll = setInterval(async () => {
+      setBlockCount(await althea.provider.getBlockNumber())
+    }, 1000)
+    return () => clearInterval(poll)
+  }, [])
 
-  let displaySidebar = (name: string) => {
+  const displaySidebar = (name: string) => {
     switch (name) {
-      case "subscriptionFee":
-        setSubscriptionFee(true);
-        break;
-      case "generateReport":
-        setGenerateReport(true);
-        break;
+      case 'subscriptionFee':
+        setSubscriptionFee(true)
+        break
+      case 'generateReport':
+        setGenerateReport(true)
+        break
       default:
-        return;
+        return
     }
-  };
+  }
 
-  let store = { setSearch, displaySidebar, filteredNodes, daoAddress };
+  const store = { setSearch, displaySidebar, filteredNodes, daoAddress }
 
-  let navProps = {
+  const navProps = {
     page,
+    pages: Object.keys(pages),
     setPage,
-    pages: Object.keys(pages)
-  };
+  }
 
-  const Page = pages[page];
+  const Page = pages[page]
 
   return (
     <Context.Provider value={store}>
@@ -155,15 +146,15 @@ const App: FunctionComponent = () => {
             />
 
             <div
-              style={{ background: "white", borderBottom: "1px solid #ddd" }}
+              style={{ background: 'white', borderBottom: '1px solid #ddd' }}
             >
               <Text size="xxlarge">Althea</Text>
               <Button
                 mode="strong"
-                style={{ float: "right", padding: "10px 40px" }}
+                style={{ float: 'right', padding: '10px 40px' }}
                 onClick={() => setNewNode(true)}
               >
-                {t("newNode")}
+                {t('newNode')}
               </Button>
               <Nav {...navProps} />
               <div>{blockCount}</div>
@@ -173,14 +164,14 @@ const App: FunctionComponent = () => {
         </AppContainer>
       </div>
     </Context.Provider>
-  );
-};
+  )
+}
 
 App.propTypes = {
   app: PropTypes.object,
-  nodes: PropTypes.array,
   daoAddress: PropTypes.string,
-  t: PropTypes.func
-};
+  nodes: PropTypes.array,
+  t: PropTypes.func,
+}
 
-export default App;
+export default App

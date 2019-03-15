@@ -48,7 +48,7 @@
       "email": "giacomo.licari@gnosis.pm"
     }
   ],
-  "license": "LGPL",
+  "license": "LGPL-2.0-or-later",
   "dependencies": {
     "abi-decoder": "1.1.0",
     "angular": "1.5.8",
