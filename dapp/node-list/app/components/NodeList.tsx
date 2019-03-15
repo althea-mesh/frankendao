@@ -59,7 +59,7 @@ const NodeList: FunctionComponent = () => {
   const { filteredNodes } = useContext(Context)
   const nodes = filteredNodes
 
-  const fundsColor = (funds: BigNumber) => (funds > 0 ? 'black' : 'red')
+  const fundsColor = (funds: number) => (funds > 0 ? 'black' : 'red')
   const trunc = (s: string, n: number) => `${s.substr(0, n)}...${s.substr(-n)}`
 
   const hexIp = (ip: string) =>

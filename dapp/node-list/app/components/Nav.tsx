@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@aragon/ui'
 import styled from 'styled-components'
@@ -10,7 +10,13 @@ const NavButton = styled(Button)`
   border-bottom: ${props => (props.active ? '5px solid #37CFCB' : 'none')};
 `
 
-const Nav = ({ page, pages, setPage }) => {
+type Props = {
+  page: ReactNode
+  pages: string[]
+  setPage: (page: ReactNode) => void
+}
+
+const Nav: FunctionComponent<Props> = ({ page, pages, setPage }) => {
   let [t] = useTranslation()
 
   return (

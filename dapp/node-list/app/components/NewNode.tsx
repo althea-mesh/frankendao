@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Field, SidePanel, Text, TextInput } from '@aragon/ui'
 import { Address6 } from 'ip-address'
@@ -11,7 +11,17 @@ const FatTextInput = styled(TextInput)`
   padding: 8px;
 `
 
-const NewNode = ({ opened, handleClose, daoAddress }) => {
+type Props = {
+  daoAddress: string
+  handleClose: () => void
+  opened: boolean
+}
+
+const NewNode: FunctionComponent<Props> = ({
+  daoAddress,
+  handleClose,
+  opened,
+}) => {
   let [t] = useTranslation()
 
   let [nickname, setNickname] = useState('')
@@ -30,14 +40,15 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
     setIpAddress(ipAddress)
   }, [])
 
-  let hex = s => utils.hexDataSlice(utils.formatBytes32String(s), 0, 16)
+  let hex = (s: string) =>
+    utils.hexDataSlice(utils.formatBytes32String(s), 0, 16)
 
-  let hexIp = ip =>
+  let hexIp = (ip: string) =>
     '0x' + new Address6(ip).canonicalForm().replace(new RegExp(':', 'g'), '')
 
-  let handleScan = result => {
-    if (result) {
-      setEthAddress(result.replace('ethereum:', ''))
+  let handleScan = (data: string | null) => {
+    if (data) {
+      setEthAddress(data.replace('ethereum:', ''))
       setScanning(false)
     }
   }
@@ -48,13 +59,19 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
     })
   }
 
+  let changeNickname = (e: React.FormEvent<HTMLInputElement>) =>
+    setNickname(e.currentTarget.value)
+
+  let changeEthAddress = (e: React.FormEvent<HTMLInputElement>) =>
+    setEthAddress(e.currentTarget.value)
+
   return (
     <SidePanel title={t('newNode')} opened={opened} onClose={handleClose}>
       <Field label={t('nodeNickname')}>
         <FatTextInput
           type="text"
           name="nickname"
-          onChange={e => setNickname(e.target.value)}
+          onChange={changeNickname}
           value={nickname}
         />
       </Field>
@@ -64,7 +81,7 @@ const NewNode = ({ opened, handleClose, daoAddress }) => {
         <FatTextInput
           type="text"
           name="fee"
-          onChange={e => setEthAddress(e.target.value)}
+          onChange={changeEthAddress}
           value={ethAddress}
           style={{ marginRight: 15 }}
         />

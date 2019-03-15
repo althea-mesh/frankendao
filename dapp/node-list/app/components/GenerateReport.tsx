@@ -1,9 +1,14 @@
-import React, { useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, DropDown, Field, SidePanel, TextInput } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 
-const GenerateReport = ({ handleClose, opened }) => {
+type Props = {
+  handleClose: () => void
+  opened: boolean
+}
+
+const GenerateReport: FunctionComponent<Props> = ({ handleClose, opened }) => {
   let [t] = useTranslation()
 
   let [name, setName] = useState('')
@@ -12,11 +17,11 @@ const GenerateReport = ({ handleClose, opened }) => {
   let [start, setStart] = useState('')
   let [end, setEnd] = useState('')
 
-  let [address, setAddress] = useState('')
-  let [nickname, setNickname] = useState('')
-  let [amount, setAmount] = useState('')
-  let [date, setDate] = useState('')
-  let [reference, setReference] = useState('')
+  let [address, setAddress] = useState(false)
+  let [nickname, setNickname] = useState(false)
+  let [amount, setAmount] = useState(false)
+  let [date, setDate] = useState(false)
+  let [reference, setReference] = useState(false)
 
   const types = ['Finance']
   const formats = ['CSV']
@@ -28,14 +33,20 @@ const GenerateReport = ({ handleClose, opened }) => {
           wide
           type="text"
           name="name"
-          onChange={e => setName(e.target.value)}
+          onChange={(e: React.FormEvent<HTMLInputElement>) =>
+            setName(e.currentTarget.value)
+          }
           value={name}
         />
       </Field>
       <Row>
         <Col xs={6}>
           <Field label={t('reportType')}>
-            <DropDown items={types} active={type} onChange={i => setType(i)} />
+            <DropDown
+              items={types}
+              active={type}
+              onChange={(i: number) => setType(i)}
+            />
           </Field>
         </Col>
         <Col>
@@ -43,7 +54,7 @@ const GenerateReport = ({ handleClose, opened }) => {
             <DropDown
               items={formats}
               active={format}
-              onChange={i => setFormat(i)}
+              onChange={(i: number) => setFormat(i)}
             />
           </Field>
         </Col>
@@ -56,7 +67,9 @@ const GenerateReport = ({ handleClose, opened }) => {
               wide
               type="text"
               name="start"
-              onChange={e => setStart(e.target.value)}
+              onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                setStart(e.currentTarget.value)
+              }
               value={start}
             />
           </Field>
@@ -67,7 +80,9 @@ const GenerateReport = ({ handleClose, opened }) => {
               wide
               type="text"
               name="end"
-              onChange={e => setEnd(e.target.value)}
+              onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                setEnd(e.currentTarget.value)
+              }
               value={end}
             />
           </Field>
@@ -78,7 +93,6 @@ const GenerateReport = ({ handleClose, opened }) => {
         <input
           id="address"
           type="checkbox"
-          value={address}
           onClick={() => setAddress(!address)}
         />
         <label htmlFor="address">Recipient Address</label>
@@ -87,34 +101,22 @@ const GenerateReport = ({ handleClose, opened }) => {
         <input
           id="nickname"
           type="checkbox"
-          value={nickname}
           onClick={() => setNickname(!nickname)}
         />
         <label htmlFor="nickname">Recipient Nickname</label>
       </div>
       <div>
-        <input
-          id="amount"
-          type="checkbox"
-          value={amount}
-          onClick={() => setAmount(!amount)}
-        />
+        <input id="amount" type="checkbox" onClick={() => setAmount(!amount)} />
         <label htmlFor="amount">Transaction Amount</label>
       </div>
       <div>
-        <input
-          id="date"
-          type="checkbox"
-          value={date}
-          onClick={() => setDate(!date)}
-        />
+        <input id="date" type="checkbox" onClick={() => setDate(!date)} />
         <label htmlFor="date">Transaction Date</label>
       </div>
       <div>
         <input
           id="reference"
           type="checkbox"
-          value={reference}
           onClick={() => setReference(!reference)}
         />
         <label htmlFor="reference">Transaction Reference</label>

@@ -36,11 +36,14 @@ const Settings: FunctionComponent = () => {
   let [index, setIndex] = useState(0)
   let [threshold, setThreshold] = useState(0.3)
 
-  let setLocale = i => {
+  let setLocale = (i: number) => {
     let locale = locales[i]
     setIndex(i)
     i18n.changeLanguage(locale.toLowerCase())
   }
+
+  let changeThreshold = (e: React.FormEvent<HTMLInputElement>) =>
+    setThreshold(parseFloat(e.currentTarget.value))
 
   return (
     <div style={{ marginTop: 30 }}>
@@ -60,7 +63,7 @@ const Settings: FunctionComponent = () => {
         <TextInput
           type="text"
           name="threshold"
-          onChange={e => setThreshold(e.target.value)}
+          onChange={changeThreshold}
           value={threshold}
         />
         <Text>ETH</Text>
