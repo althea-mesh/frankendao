@@ -90,7 +90,7 @@ contract Althea {
     require(userMapping[_ip].ethAddr== address(0), "Member already exists");
     userMapping[_ip] = User(_ethAddr, _nick);
     subnetSubscribers.push(_ip);
-    NewMember(_ethAddr, _ip, _nick);
+    emit NewMember(_ethAddr, _ip, _nick);
   }
 
   function collectBills() external {
@@ -112,7 +112,7 @@ contract Althea {
   }
 
   function deleteMember(bytes16 _ip) external onlyOwners {
-    MemberRemoved(userMapping[_ip].ethAddr, _ip, userMapping[_ip].nick);
+    emit MemberRemoved(userMapping[_ip].ethAddr, _ip, userMapping[_ip].nick);
     delete userMapping[_ip];
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       if (_ip == subnetSubscribers[i]) {
