@@ -34,21 +34,25 @@ const AppContainer = styled(AragonApp)`
 const App = () => {
   let [t] = useTranslation();
 
-  let setSearch = e => {
-    if (e.target.value) {
+  let setSearch = (e: React.FormEvent<HTMLInputElement>) => {
+    if (e.currentTarget.value) {
       let options = {
         threshold: 0.1,
-        keys: ["ipAddress", "ethAddress", "nickname"]
+        keys: [
+          { name: "ipAddress", weight: 0.1 },
+          { name: "ethAddress", weight: 0.1 },
+          { name: "nickname", weight: 0.8 }
+        ]
       };
       let fuse = new Fuse(nodes, options);
 
-      setFilteredNodes(fuse.search(e.target.value));
+      setFilteredNodes(fuse.search(e.currentTarget.value));
     }
   };
 
   let [daoAddress, setDaoAddress] = useState("");
 
-  let [nodes, setNodes] = useState(null);
+  let [nodes, setNodes] = useState([]);
   let [filteredNodes, setFilteredNodes] = useState(null);
 
   let [newNode, setNewNode] = useState(false);
