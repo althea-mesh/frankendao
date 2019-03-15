@@ -1,13 +1,12 @@
-import React, { FunctionComponent, useState } from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import { DropDown, Text, TextInput } from "@aragon/ui";
-import styled from "styled-components";
+import React, { FunctionComponent, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { DropDown, Text, TextInput } from '@aragon/ui'
+import styled from 'styled-components'
 
-const locales = ["EN", "ES"];
+const locales = ['EN', 'ES']
 const Spacer = styled.div`
   margin: 15px 0;
-`;
+`
 
 const InputGroup = styled.div`
   display: table;
@@ -29,25 +28,25 @@ const InputGroup = styled.div`
     margin-right: -1px;
     margin-bottom: -1px;
   }
-`;
+`
 
 const Settings: FunctionComponent = () => {
-  let [t, i18n] = useTranslation();
+  let [t, i18n] = useTranslation()
 
-  let [index, setIndex] = useState(0);
-  let [threshold, setThreshold] = useState(0.3);
+  let [index, setIndex] = useState(0)
+  let [threshold, setThreshold] = useState(0.3)
 
   let setLocale = i => {
-    let locale = locales[i];
-    setIndex(i);
-    i18n.changeLanguage(locale.toLowerCase());
-  };
+    let locale = locales[i]
+    setIndex(i)
+    i18n.changeLanguage(locale.toLowerCase())
+  }
 
   return (
     <div style={{ marginTop: 30 }}>
-      <Text size="large">{t("language")}</Text>
+      <Text size="large">{t('language')}</Text>
       <Spacer />
-      <Text.Block>{t("defaultLanguage")}</Text.Block>
+      <Text.Block>{t('defaultLanguage')}</Text.Block>
       <Spacer />
 
       <DropDown items={locales} active={index} onChange={setLocale} />
@@ -55,7 +54,7 @@ const Settings: FunctionComponent = () => {
       <Spacer />
       <Text size="large">Low Balance Threshold</Text>
       <Spacer />
-      <Text.Block>{t("lowBalance")}</Text.Block>
+      <Text.Block>{t('lowBalance')}</Text.Block>
       <Spacer />
       <InputGroup>
         <TextInput
@@ -67,12 +66,7 @@ const Settings: FunctionComponent = () => {
         <Text>ETH</Text>
       </InputGroup>
     </div>
-  );
-};
+  )
+}
 
-Settings.propTypes = {
-  i18n: PropTypes.object,
-  t: PropTypes.func,
-};
-
-export default Settings;
+export default Settings

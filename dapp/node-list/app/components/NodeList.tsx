@@ -8,20 +8,22 @@ import {
   IconSettings,
   IconTime,
   Text,
-} from "@aragon/ui";
-import { Address6 } from "ip-address";
-import PropTypes from "prop-types";
-import React, { FunctionComponent, useContext } from "react";
-import Blockies from "react-blockies";
-import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import althea, { Context, utils } from "../althea";
-import { Node } from "../types";
-import NodeListControls from "./NodeListControls";
-import NodeStats from "./NodeStats";
+} from '@aragon/ui'
+import { Address6 } from 'ip-address'
+import React, { FunctionComponent, useContext } from 'react'
+import Blockies from 'react-blockies'
+import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+import althea, { Context } from '../althea'
+import { Node } from '../types'
+import NodeListControls from './NodeListControls'
+import NodeStats from './NodeStats'
+import { utils } from 'ethers'
+
+const { BigNumber } = utils
 
 const Table = styled.table.attrs({
-  className: "table-responsive-sm",
+  className: 'table-responsive-sm',
 })`
   background: white;
   width: 100%;
@@ -45,27 +47,27 @@ const Table = styled.table.attrs({
     background: #f7fbfd;
     color: #aaa;
   }
-`;
+`
 
 const Blue = styled.div`
   background: #daeaef;
   height: 25px;
-`;
+`
 
 const NodeList: FunctionComponent = () => {
-  const [t] = useTranslation();
-  const { filteredNodes } = useContext(Context);
-  const nodes = filteredNodes;
+  const [t] = useTranslation()
+  const { filteredNodes } = useContext(Context)
+  const nodes = filteredNodes
 
-  const fundsColor = (funds: number) => (funds > 0 ? "black" : "red");
-  const trunc = (s: string, n: number) => `${s.substr(0, n)}...${s.substr(-n)}`;
+  const fundsColor = (funds: BigNumber) => (funds > 0 ? 'black' : 'red')
+  const trunc = (s: string, n: number) => `${s.substr(0, n)}...${s.substr(-n)}`
 
   const hexIp = (ip: string) =>
-    "0x" + new Address6(ip).canonicalForm().replace(new RegExp(":", "g"), "");
+    '0x' + new Address6(ip).canonicalForm().replace(new RegExp(':', 'g'), '')
 
   const removeNode = async (node: Node) => {
-    await althea.deleteMember(hexIp(node.ipAddress), { gasLimit: 500000 });
-  };
+    await althea.deleteMember(hexIp(node.ipAddress), { gasLimit: 500000 })
+  }
 
   return (
     <div>
@@ -73,30 +75,29 @@ const NodeList: FunctionComponent = () => {
       <NodeListControls />
 
       {!nodes || !nodes.length ? (
-        <Text>{t("noNodes")}</Text>
+        <Text>{t('noNodes')}</Text>
       ) : (
         <Table>
           <thead>
             <tr>
-              <th>{t("nickname")}</th>
-              <th>{t("ethAddress")}</th>
-              <th>{t("ipAddress")}</th>
-              <th className="text-right">{t("balance")}</th>
-              <th>{t("status")}</th>
+              <th>{t('nickname')}</th>
+              <th>{t('ethAddress')}</th>
+              <th>{t('ipAddress')}</th>
+              <th className="text-right">{t('balance')}</th>
+              <th>{t('status')}</th>
               <th />
             </tr>
           </thead>
           <tbody>
             {nodes.map((node: Node, i: number) => {
-              let {
+              const {
                 nickname,
                 ethAddress,
                 ipAddress,
                 bill: { balance },
-              } = node;
+              } = node
 
-              // balance = utils.formatEther(balance);
-              balance = balance.toString();
+              const ethBalance = parseFloat(utils.formatEther(balance))
 
               return (
                 <tr key={i}>
@@ -108,8 +109,8 @@ const NodeList: FunctionComponent = () => {
                       <Blockies seed={ethAddress} size={8} scale={3} />
                       <Text
                         style={{
-                          display: "block",
-                          float: "right",
+                          display: 'block',
+                          float: 'right',
                           marginLeft: 10,
                           paddingTop: 5,
                           paddingRight: 10,
@@ -123,23 +124,23 @@ const NodeList: FunctionComponent = () => {
                     <Text>{ipAddress}</Text>
                   </td>
                   <td className="text-right">
-                    <Text color={fundsColor(balance)}>{balance} ETH</Text>
+                    <Text color={fundsColor(ethBalance)}>{ethBalance} ETH</Text>
                   </td>
                   <td>
                     <Text>
-                      {balance > 1 ? (
+                      {ethBalance > 1 ? (
                         <IconCheck />
-                      ) : balance > 0 ? (
+                      ) : ethBalance > 0 ? (
                         <IconError />
                       ) : (
                         <IconCross />
                       )}
                       &nbsp;
-                      {balance > 1
-                        ? "On-track"
-                        : balance > 0
-                        ? "Low balance"
-                        : "Insufficient funds"}
+                      {ethBalance > 1
+                        ? 'On-track'
+                        : ethBalance > 0
+                        ? 'Low balance'
+                        : 'Insufficient funds'}
                     </Text>
                   </td>
                   <td>
@@ -157,17 +158,13 @@ const NodeList: FunctionComponent = () => {
                     </ContextMenu>
                   </td>
                 </tr>
-              );
+              )
             })}
           </tbody>
         </Table>
       )}
     </div>
-  );
-};
+  )
+}
 
-NodeList.propTypes = {
-  t: PropTypes.func,
-};
-
-export default NodeList;
+export default NodeList

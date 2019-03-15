@@ -1,30 +1,29 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-import { Button, DropDown, Field, SidePanel, TextInput } from "@aragon/ui";
-import { Row, Col } from "react-flexbox-grid";
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button, DropDown, Field, SidePanel, TextInput } from '@aragon/ui'
+import { Row, Col } from 'react-flexbox-grid'
 
 const GenerateReport = ({ handleClose, opened }) => {
-  let [t] = useTranslation();
+  let [t] = useTranslation()
 
-  let [name, setName] = useState("");
-  let [type, setType] = useState(0);
-  let [format, setFormat] = useState(0);
-  let [start, setStart] = useState("");
-  let [end, setEnd] = useState("");
+  let [name, setName] = useState('')
+  let [type, setType] = useState(0)
+  let [format, setFormat] = useState(0)
+  let [start, setStart] = useState('')
+  let [end, setEnd] = useState('')
 
-  let [address, setAddress] = useState("");
-  let [nickname, setNickname] = useState("");
-  let [amount, setAmount] = useState("");
-  let [date, setDate] = useState("");
-  let [reference, setReference] = useState("");
+  let [address, setAddress] = useState('')
+  let [nickname, setNickname] = useState('')
+  let [amount, setAmount] = useState('')
+  let [date, setDate] = useState('')
+  let [reference, setReference] = useState('')
 
-  const types = ["Finance"];
-  const formats = ["CSV"];
+  const types = ['Finance']
+  const formats = ['CSV']
 
   return (
     <SidePanel title="Generate Report" opened={opened} onClose={handleClose}>
-      <Field label={t("reportName")}>
+      <Field label={t('reportName')}>
         <TextInput
           wide
           type="text"
@@ -35,12 +34,12 @@ const GenerateReport = ({ handleClose, opened }) => {
       </Field>
       <Row>
         <Col xs={6}>
-          <Field label={t("reportType")}>
+          <Field label={t('reportType')}>
             <DropDown items={types} active={type} onChange={i => setType(i)} />
           </Field>
         </Col>
         <Col>
-          <Field label={t("fileType")}>
+          <Field label={t('fileType')}>
             <DropDown
               items={formats}
               active={format}
@@ -49,10 +48,10 @@ const GenerateReport = ({ handleClose, opened }) => {
           </Field>
         </Col>
       </Row>
-      <hr style={{ border: "1px solid #eee" }} />
+      <hr style={{ border: '1px solid #eee' }} />
       <Row>
         <Col xs={6}>
-          <Field label={t("periodStart")}>
+          <Field label={t('periodStart')}>
             <TextInput
               wide
               type="text"
@@ -63,7 +62,7 @@ const GenerateReport = ({ handleClose, opened }) => {
           </Field>
         </Col>
         <Col>
-          <Field label={t("periodEnd")}>
+          <Field label={t('periodEnd')}>
             <TextInput
               wide
               type="text"
@@ -125,13 +124,7 @@ const GenerateReport = ({ handleClose, opened }) => {
         Generate Report
       </Button>
     </SidePanel>
-  );
-};
+  )
+}
 
-GenerateReport.propTypes = {
-  handleClose: PropTypes.func,
-  opened: PropTypes.bool,
-  t: PropTypes.func,
-};
-
-export default GenerateReport;
+export default GenerateReport

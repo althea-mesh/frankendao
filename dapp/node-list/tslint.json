@@ -7,7 +7,8 @@
     "rules": {
       "interface-over-type-literal": false,
       "semicolon": [true, "never"],
-      "quotemark": [true, "single", "jsx-double"]
+      "quotemark": [true, "single", "jsx-double"],
+      "trailing-comma": [true, {"multiline": "always", "singleline": "never"}]
     },
     "rulesDirectory": []
 }

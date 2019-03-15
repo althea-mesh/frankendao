@@ -1,31 +1,30 @@
-import React, { useContext, useState } from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
+import React, { useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-} from "reactstrap";
-import styled from "styled-components";
-import search from "../search.png";
-import { Context } from "../althea";
+} from 'reactstrap'
+import styled from 'styled-components'
+import search from '../search.png'
+import { Context } from '../althea'
 
 const SearchIcon = styled.img`
   width: 20px;
   height: 20px;
-`;
+`
 
 const SearchField = styled.input.attrs({
-  className: "form-control",
-  type: "text",
-  placeholder: "Search nodes",
+  className: 'form-control',
+  type: 'text',
+  placeholder: 'Search nodes',
 })`
   border-right: none;
   &::placeholder {
     color: #ccc;
   }
-`;
+`
 
 const StyledDropdownToggle = styled(DropdownToggle)`
   background: #daeaef !important;
@@ -33,18 +32,18 @@ const StyledDropdownToggle = styled(DropdownToggle)`
   padding-left: 25px !important;
   margin-bottom: -10px !important;
   border: none !important;
-`;
+`
 
 const StyledDropdownMenu = styled(DropdownMenu)`
   box-shadow: 2px 4px 15px #ccc;
   border: none !important;
   margin-top: 0px !important;
-`;
+`
 
 const NodeListControls = () => {
-  let [t] = useTranslation();
-  let [open, setOpen] = useState(false);
-  let { displaySidebar, setSearch } = useContext(Context);
+  let [t] = useTranslation()
+  let [open, setOpen] = useState(false)
+  let { displaySidebar, setSearch } = useContext(Context)
 
   return (
     <div className="d-flex justify-content-between">
@@ -62,15 +61,15 @@ const NodeListControls = () => {
           <StyledDropdownMenu right>
             <DropdownItem
               onClick={() => {
-                displaySidebar("subscriptionFee");
+                displaySidebar('subscriptionFee')
               }}
             >
-              {t("updateSubscriptionFee")}
+              {t('updateSubscriptionFee')}
             </DropdownItem>
             <DropdownItem>Collect Bills</DropdownItem>
             <DropdownItem
               onClick={() => {
-                displaySidebar("generateReport");
+                displaySidebar('generateReport')
               }}
             >
               Generate Report
@@ -79,11 +78,7 @@ const NodeListControls = () => {
         </Dropdown>
       </div>
     </div>
-  );
-};
+  )
+}
 
-NodeListControls.propTypes = {
-  t: PropTypes.func,
-};
-
-export default NodeListControls;
+export default NodeListControls

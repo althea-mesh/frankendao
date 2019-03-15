@@ -54,7 +54,6 @@
     "parcel-bundler": "^1.11.0",
     "popper.js": "^1.14.6",
     "prettier": "^1.16.1",
-    "prop-types": "^15.6.x",
     "qrcode.react": "^0.8.0",
     "react": "^16.8.4",
     "react-blockies": "^1.4.0",
@@ -89,6 +88,6 @@
   "prettier": {
     "semi": false,
     "singleQuote": true,
-    "trailingComma": "es5"
-  } 
+    "trailingComma": "all"
+  }
 }

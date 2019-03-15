@@ -1,22 +1,21 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 const Title = styled.h4`
   color: gray;
   text-transform: lowercase;
   font-variant: small-caps;
-`;
+`
 
 const Value = styled.h1`
   font-size: 24px;
-  color: ${props => (props.color ? props.color : "black")};
-`;
+  color: ${props => (props.color ? props.color : 'black')};
+`
 
 const Aside = styled.span`
   color: #aaa;
   font-weight: light;
-`;
+`
 
 const NodeStats = () => {
   return (
@@ -48,11 +47,7 @@ const NodeStats = () => {
         <Aside>per month</Aside>
       </div>
     </div>
-  );
-};
+  )
+}
 
-NodeStats.propTypes = {
-  t: PropTypes.func,
-};
-
-export default NodeStats;
+export default NodeStats
