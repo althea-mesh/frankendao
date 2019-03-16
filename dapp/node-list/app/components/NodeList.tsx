@@ -65,8 +65,9 @@ const NodeList: FunctionComponent = () => {
   const hexIp = (ip: string) =>
     '0x' + new Address6(ip).canonicalForm().replace(new RegExp(':', 'g'), '')
 
-  const removeNode = async (node: Node) => {
-    await althea.deleteMember(hexIp(node.ipAddress), { gasLimit: 500000 })
+  const removeNode = async (e: React.FormEvent<HTMLInputElement>) => {
+    const ip = hexIp(e.currentTarget.dataset.ip as string)
+    await althea.deleteMember(ip, { gasLimit: 500000 })
   }
 
   return (
@@ -145,7 +146,7 @@ const NodeList: FunctionComponent = () => {
                   </td>
                   <td>
                     <ContextMenu>
-                      <ContextMenuItem onClick={() => removeNode(node)}>
+                      <ContextMenuItem onClick={removeNode} data-ip={ipAddress}>
                         <IconRemove /> Remove Node
                       </ContextMenuItem>
                       <ContextMenuItem>

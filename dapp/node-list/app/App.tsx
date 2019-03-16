@@ -2,7 +2,6 @@ import { AragonApp, Button, Text } from '@aragon/ui'
 import Fuse, { FuseOptions } from 'fuse.js'
 import { Address6 } from 'ip-address'
 import { BigInteger } from 'jsbn'
-import PropTypes from 'prop-types'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { Grid } from 'react-flexbox-grid'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +17,8 @@ import Settings from './components/Settings'
 
 import Nav from './components/Nav'
 
-import althea, { Context, utils } from './althea'
+import { utils } from 'ethers'
+import althea, { Context } from './althea'
 
 const pages: PageMap = {
   nodeList: NodeList,
@@ -126,23 +126,28 @@ const App: FunctionComponent = () => {
 
   const Page = pages[page]
 
+  const openNewNode = () => setNewNode(true)
+  const closeNewNode = () => setNewNode(false)
+  const closeGenerateReport = () => setGenerateReport(false)
+  const closeSubscriptionFee = () => setSubscriptionFee(false)
+
   return (
     <Context.Provider value={store}>
       <div className="althea-react">
         <AppContainer publicUrl={window.location.href}>
-          <Grid fluid>
+          <Grid fluid={true}>
             <NewNode
               opened={newNode}
               daoAddress={daoAddress}
-              handleClose={() => setNewNode(false)}
+              handleClose={closeNewNode}
             />
             <GenerateReport
               opened={generateReport}
-              handleClose={() => setGenerateReport(false)}
+              handleClose={closeGenerateReport}
             />
             <SubscriptionFee
               opened={subscriptionFee}
-              handleClose={() => setSubscriptionFee(false)}
+              handleClose={closeSubscriptionFee}
             />
 
             <div
@@ -152,7 +157,7 @@ const App: FunctionComponent = () => {
               <Button
                 mode="strong"
                 style={{ float: 'right', padding: '10px 40px' }}
-                onClick={() => setNewNode(true)}
+                onClick={openNewNode}
               >
                 {t('newNode')}
               </Button>
@@ -165,13 +170,6 @@ const App: FunctionComponent = () => {
       </div>
     </Context.Provider>
   )
-}
-
-App.propTypes = {
-  app: PropTypes.object,
-  daoAddress: PropTypes.string,
-  nodes: PropTypes.array,
-  t: PropTypes.func,
 }
 
 export default App

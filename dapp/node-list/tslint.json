@@ -1,14 +1,19 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint:recommended"
+        "tslint:latest",
+        "tslint-react",
+        "tslint-config-prettier"
     ],
-    "jsRules": {},
+    "jsRules": {
+      "object-literal-sort-keys": false
+    },
     "rules": {
       "interface-over-type-literal": false,
+      "object-literal-sort-keys": false,
+      "no-console": false,
       "semicolon": [true, "never"],
-      "quotemark": [true, "single", "jsx-double"],
-      "trailing-comma": [true, {"multiline": "always", "singleline": "never"}]
+      "quotemark": [true, "single", "jsx-double"]
     },
     "rulesDirectory": []
 }

@@ -45,6 +45,10 @@ const NodeListControls = () => {
   const [open, setOpen] = useState(false)
   const { displaySidebar, setSearch } = useContext(Context)
 
+  const toggleOpen = () => setOpen(!open)
+  const displayFeeSidebar = () => displaySidebar('subscriptionFee')
+  const displayReportSidebar = () => displaySidebar('generateReport')
+
   return (
     <div className="d-flex justify-content-between">
       <div className="input-group mb-3" style={{ width: 220 }}>
@@ -56,22 +60,14 @@ const NodeListControls = () => {
         </div>
       </div>
       <div>
-        <Dropdown isOpen={open} toggle={() => setOpen(!open)}>
-          <StyledDropdownToggle caret>Actions</StyledDropdownToggle>
-          <StyledDropdownMenu right>
-            <DropdownItem
-              onClick={() => {
-                displaySidebar('subscriptionFee')
-              }}
-            >
+        <Dropdown isOpen={open} toggle={toggleOpen}>
+          <StyledDropdownToggle caret={true}>Actions</StyledDropdownToggle>
+          <StyledDropdownMenu right={true}>
+            <DropdownItem onClick={displayFeeSidebar}>
               {t('updateSubscriptionFee')}
             </DropdownItem>
             <DropdownItem>Collect Bills</DropdownItem>
-            <DropdownItem
-              onClick={() => {
-                displaySidebar('generateReport')
-              }}
-            >
+            <DropdownItem onClick={displayReportSidebar}>
               Generate Report
             </DropdownItem>
           </StyledDropdownMenu>

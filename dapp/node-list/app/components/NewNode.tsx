@@ -1,11 +1,12 @@
 import { Button, Field, SidePanel, Text, TextInput } from '@aragon/ui'
+import { utils } from 'ethers'
 import { Address6 } from 'ip-address'
 import QrCode from 'qrcode.react'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import QrReader from 'react-qr-reader'
 import styled from 'styled-components'
-import althea, { utils } from '../althea'
+import althea from '../althea'
 
 const FatTextInput = styled(TextInput)`
   padding: 8px;
@@ -14,7 +15,7 @@ const FatTextInput = styled(TextInput)`
 type Props = {
   daoAddress: string
   handleClose: () => void
-  opened: boolean,
+  opened: boolean
 }
 
 const NewNode: FunctionComponent<Props> = ({
@@ -35,9 +36,9 @@ const NewNode: FunctionComponent<Props> = ({
     crypto.getRandomValues(bytes)
 
     const block64 = Array.from(bytes)[0].toString(16)
-    const ipAddress = subnet48 + block64 + '::/64'
+    const ip = subnet48 + block64 + '::/64'
 
-    setIpAddress(ipAddress)
+    setIpAddress(ip)
   }, [])
 
   const hex = (s: string) =>
@@ -65,6 +66,8 @@ const NewNode: FunctionComponent<Props> = ({
   const changeEthAddress = (e: React.FormEvent<HTMLInputElement>) =>
     setEthAddress(e.currentTarget.value)
 
+  const toggleScanning = () => setScanning(!scanning)
+
   return (
     <SidePanel title={t('newNode')} opened={opened} onClose={handleClose}>
       <Field label={t('nodeNickname')}>
@@ -85,7 +88,7 @@ const NewNode: FunctionComponent<Props> = ({
           value={ethAddress}
           style={{ marginRight: 15 }}
         />
-        <Button mode="outline" onClick={() => setScanning(!scanning)}>
+        <Button mode="outline" onClick={toggleScanning}>
           Scan QR Code
         </Button>
       </Field>
@@ -128,7 +131,12 @@ const NewNode: FunctionComponent<Props> = ({
         <Text>{daoAddress}</Text>
       </Field>
 
-      <Button mode="strong" wide style={{ marginTop: 20 }} onClick={submit}>
+      <Button
+        mode="strong"
+        wide={true}
+        style={{ marginTop: 20 }}
+        onClick={submit}
+      >
         {t('addNode')}
       </Button>
     </SidePanel>
