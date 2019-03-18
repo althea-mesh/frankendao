@@ -162,7 +162,6 @@ const App: FunctionComponent = () => {
                 {t('newNode')}
               </Button>
               <Nav {...navProps} />
-              <div>{blockCount}</div>
             </div>
             <Page />
           </Grid>

@@ -1,64 +1,71 @@
 /* global contract, config, it, assert*/
-const Althea = require('Embark/contracts/Althea.sol');
-const MultiSigWallet = require('Embark/contracts/MultiSigWallet');
-const { reverting } = require('./helpers/shouldFail.js');
-const { summation } = require('./helpers/summation.js');
+const { reverting } = require('./helpers/shouldFail.js')
+const { summation } = require('./helpers/summation.js')
+const Web3 = require('web3')
 
-require('chai').should();
+require('chai').should()
 
-const toBN = web3.utils.toBN;
-const expectEvent = require('./helpers/expectEvent.js');
+const expectEvent = require('./helpers/expectEvent.js')
+const web3 = new Web3('http://localhost:8545')
+const toBN = web3.utils.toBN
 
-let accounts;
+let accounts
 
 // For documentation please see https://embark.status.im/docs/contracts_testing.htm  l
-config({
-  deployment: {
-    accounts: [
-      {
-        mnemonic: 'cook mango twist then skin sort option civil have still rather guilt',
-        addressIndex: '0',
-        hdpath: `m/44'/60'/0'/0/`
-      },
-      {
-        'nodeAccounts': true
-      }
-    ]
-  },
-  contracts: {
-    'MultiSigWallet': {
-      args: [['$accounts[0]'], 1]
+config(
+  {
+    deployment: {
+      accounts: [
+        {
+          mnemonic:
+            'cook mango twist then skin sort option civil have still rather guilt',
+          addressIndex: '0',
+          hdpath: `m/44'/60'/0'/0/`,
+        },
+        {
+          nodeAccounts: true,
+        },
+      ],
     },
-    'Althea': {
-      args: ['$MultiSigWallet']
-    }
-  }
-}, (_err, web3Accounts) => {
-  accounts = web3Accounts;
-});
+    contracts: {
+      MultiSigWallet: {
+        args: [['$accounts[0]'], 1],
+      },
+      Althea: {
+        args: ['$MultiSigWallet'],
+      },
+    },
+  },
+  (_err, web3Accounts) => {
+    accounts = web3Accounts
+  },
+)
 
-const ZERO = '0x0000000000000000000000000000000000000000';
+const ZERO = '0x0000000000000000000000000000000000000000'
 
 async function mineBlocks(count, cb) {
-  let i = 0;
+  let i = 0
   while (i < count) {
-    web3.currentProvider.send({
-      method:"evm_mine"
-    }, (error, result) => {
-      if(error) {
-        console.log('error', error)
-      }
-      return
-    })
-    i++;
+    web3.currentProvider.send(
+      {
+        method: 'evm_mine',
+      },
+      (error, result) => {
+        if (error) {
+          console.log('error', error)
+        }
+        return
+      },
+    )
+    i++
   }
 }
 
 contract('Althea', function() {
-  this.timeout(0);
+  this.timeout(0)
 
-  let althea, wallet;
-  const required = 2;
+  let althea, wallet
+  const required = 2
   // the per block fee is .50 usd a day at 200usd ETH
   const perBlockFee = toBN(web3.utils.toWei('0.000000405'))
 
@@ -66,20 +73,20 @@ contract('Althea', function() {
     let ipv6 = web3.utils.padRight('0xc0a8010ac0a8010a', 32)
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
     it('Reverts when not an owner', async function() {
-      console.log('Bob', web3.utils.padRight(
-        web3.utils.toHex('Bob\'s Internet Shop'), 32
-      ))
-      
-      console.log('Deborah', web3.utils.padRight(
-        web3.utils.toHex('Deborah'), 32)
+      console.log(
+        'Bob',
+        web3.utils.padRight(web3.utils.toHex("Bob's Internet Shop"), 32),
       )
-      console.log('Sebas', web3.utils.padRight(
-        web3.utils.toHex('Sebas'), 32
-      ))
+
+      console.log(
+        'Deborah',
+        web3.utils.padRight(web3.utils.toHex('Deborah'), 32),
+      )
+      console.log('Sebas', web3.utils.padRight(web3.utils.toHex('Sebas'), 32))
       const owners = [accounts[1], accounts[2], accounts[3]]
       const root = owners[0]
       await Althea.methods.initialize(root)
-      await Althea.methods.setPerBlockFee(perBlockFee, {from:root})
+      await Althea.methods.setPerBlockFee(perBlockFee, { from: root })
       await reverting(althea.addMember(accounts[1], ipv6, nick))
     })
   })
@@ -88,82 +95,75 @@ contract('Althea', function() {
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
 
     it('Adds a new member to the list', async function() {
-      await althea.addMember(accounts[1], ipv6, nick, {from:owners[0]})
+      await althea.addMember(accounts[1], ipv6, nick, { from: owners[0] })
       let values = await althea.userMapping(ipv6)
       assert.equal(values.ethAddr, accounts[1])
       assert.equal(values.nick, nick)
     })
 
     it('Should have a NewMember event', async function() {
-      const receipt = await althea.addMember(
-        accounts[1], ipv6, nick, {from:root}
-      )
+      const receipt = await althea.addMember(accounts[1], ipv6, nick, {
+        from: root,
+      })
       await expectEvent.inLogs(receipt.logs, 'NewMember', {
         ethAddress: accounts[1],
         ipAddress: ipv6,
-        nickname: nick
+        nickname: nick,
       })
     })
 
     it('Reverts when adding an existing member to the list', async function() {
-      await althea.addMember(
-        accounts[1], ipv6, nick, {from: root}
-      )
-      await reverting(
-        althea.addMember(accounts[1], ipv6, nick, {from: root})
-      )
+      await althea.addMember(accounts[1], ipv6, nick, { from: root })
+      await reverting(althea.addMember(accounts[1], ipv6, nick, { from: root }))
     })
 
     it('Removes member from list', async function() {
-      await althea.addMember(accounts[1], ipv6, nick, {from:root})
+      await althea.addMember(accounts[1], ipv6, nick, { from: root })
       let value = await althea.userMapping(ipv6)
       assert.equal(value.ethAddr, accounts[1])
 
-      await althea.deleteMember(ipv6, {from:root})
+      await althea.deleteMember(ipv6, { from: root })
       let value2 = await althea.userMapping(ipv6)
       assert.equal(value2.ethAddr, ZERO)
       assert.equal(value2.nick, web3.utils.padRight('0x', 32))
     })
 
     it('Should have a MemberRemoved event', async function() {
-      await althea.addMember(
-        accounts[1], ipv6, nick, {from:root}
-      )
-      const receipt = await althea.deleteMember(ipv6, {from:root})
+      await althea.addMember(accounts[1], ipv6, nick, { from: root })
+      const receipt = await althea.deleteMember(ipv6, { from: root })
       await expectEvent.inLogs(receipt.logs, 'MemberRemoved', {
         ethAddress: accounts[1],
         ipAddress: ipv6,
-        nickname: nick
+        nickname: nick,
       })
     })
   })
 
   context('addBill', function() {
     it('Revert when no value is sent', async function() {
-      await reverting(althea.methods['addBill()']({from:root}))
+      await reverting(althea.methods['addBill()']({ from: root }))
     })
 
     it('Adds a new bill to mapping', async function() {
-
       let amount = toBN(2).mul(perBlockFee)
-      const receipt = await althea.methods['addBill()']({value: amount})
-      await expectEvent.inLogs(receipt.logs, 'NewBill', { 
+      const receipt = await althea.methods['addBill()']({ value: amount })
+      await expectEvent.inLogs(receipt.logs, 'NewBill', {
         payer: accounts[0],
-        collector: wallet.address
+        collector: wallet.address,
       })
     })
 
     it('Contract ether balance should increase', async function() {
       let balance = toBN(10).mul(perBlockFee)
-      await althea.methods['addBill()']({value: balance})
+      await althea.methods['addBill()']({ value: balance })
       let altheaBalance = await web3.eth.getBalance(althea.address)
       altheaBalance.should.eql(web3.utils.toBN(balance).toString())
     })
 
     it('Increase bill when more amount is sent', async function() {
       let amount = toBN(2).mul(perBlockFee)
-      await althea.methods['addBill()']({value: amount})
-      await althea.methods['addBill()']({value: amount})
+      await althea.methods['addBill()']({ value: amount })
+      await althea.methods['addBill()']({ value: amount })
       let total = amount.mul(toBN(2))
       let bill = await althea.billMapping(accounts[0])
       assert(bill.balance.eq(total))
@@ -178,18 +178,19 @@ contract('Althea', function() {
     it('Adds a new bill to mapping', async function() {
       let amount = toBN(2).mul(perBlockFee)
       const receipt = await althea.sendTransaction({
-        from: accounts[1], value: amount
+        from: accounts[1],
+        value: amount,
       })
 
-      await expectEvent.inLogs(receipt.logs, 'NewBill', { 
+      await expectEvent.inLogs(receipt.logs, 'NewBill', {
         payer: accounts[1],
-        collector: wallet.address
+        collector: wallet.address,
       })
 
       it('Increase bill when more amount is sent', async function() {
         let amount = toBN(2).mul(perBlockFee)
-        await althea.methods['addBill()']({value: amount})
-        await althea.methods['addBill()']({value: amount})
+        await althea.methods['addBill()']({ value: amount })
+        await althea.methods['addBill()']({ value: amount })
         let total = amount.mul(toBN(2))
         let bill = await althea.billMapping(accounts[0])
         assert(bill.balance.eq(total))
@@ -198,15 +199,15 @@ contract('Althea', function() {
 
     it('Contract ether balance should increase', async function() {
       let balance = toBN(10).mul(perBlockFee)
-      await althea.sendTransaction({value: balance})
+      await althea.sendTransaction({ value: balance })
       let altheaBalance = await web3.eth.getBalance(althea.address)
       altheaBalance.should.eql(web3.utils.toBN(balance).toString())
     })
 
     it('Increase bill by corresponding amount', async function() {
       let amount = toBN(2).mul(perBlockFee)
-      await althea.sendTransaction({value: amount})
-      await althea.sendTransaction({value: amount})
+      await althea.sendTransaction({ value: amount })
+      await althea.sendTransaction({ value: amount })
       let total = amount.mul(toBN(2))
       let bill = await althea.billMapping(accounts[0])
       assert(bill.balance.eq(total))
@@ -214,11 +215,9 @@ contract('Althea', function() {
   })
 
   context('getCountOfSubscribers', function() {
-
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
 
     it('Should have the right length', async function() {
-
       let min = Math.ceil(7)
       let max = Math.floor(2)
       let subnetDAOUsers = Math.floor(Math.random() * (max - min)) + min
@@ -228,7 +227,7 @@ contract('Althea', function() {
 
       for (let i = 0; i < subnetDAOUsers; i++) {
         let ipv6 = web3.utils.randomHex(32)
-        await althea.addMember(accounts[0], ipv6, nick, {from:root})
+        await althea.addMember(accounts[0], ipv6, nick, { from: root })
       }
       let subscribers = await althea.getCountOfSubscribers()
       subscribers.toNumber().should.eql(subnetDAOUsers)
@@ -236,25 +235,23 @@ contract('Althea', function() {
   })
 
   context('setPerBlockFee', function() {
-
     it('Should set a new perBlockFee', async function() {
-      let newFee = 10**7
-      await althea.setPerBlockFee(newFee, {from:root})
+      let newFee = 10 ** 7
+      await althea.setPerBlockFee(newFee, { from: root })
       nn = await althea.perBlockFee()
       nn.toNumber().should.eql(newFee)
     })
   })
 
   context('collectBills', function() {
-
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
 
     it('Bill lastUpdated should equal current block number', async function() {
       let amount = toBN(2).mul(perBlockFee)
-      await althea.addMember(
-        accounts[0], web3.utils.randomHex(32), nick, {from:root}
-      )
-      await althea.methods['addBill()']({value: amount})
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
+      await althea.methods['addBill()']({ value: amount })
       await althea.collectBills()
       let bill = await althea.billMapping(accounts[0])
       let blockNumber = toBN(await web3.eth.getBlockNumber())
@@ -262,42 +259,45 @@ contract('Althea', function() {
     })
 
     it('Payment address should have increased in balance', async function() {
-
       let amount = toBN(5).mul(perBlockFee)
-      let billBlock = (await althea.methods['addBill()']({value: amount}))
+      let billBlock = (await althea.methods['addBill()']({ value: amount }))
         .receipt.blockNumber
       // we need to add member to add it to the subnetSubscribers
-      await althea.addMember(
-        accounts[0], web3.utils.randomHex(32), nick, {from:root}
-      )
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
       let previousBalance = toBN(await web3.eth.getBalance(wallet.address))
 
       let lastBlock = (await althea.collectBills()).receipt.blockNumber
 
-      let expectedBalance = previousBalance
-        .add(toBN(lastBlock - billBlock).mul(perBlockFee))
+      let expectedBalance = previousBalance.add(
+        toBN(lastBlock - billBlock).mul(perBlockFee),
+      )
 
       assert.equal(
         toBN(await web3.eth.getBalance(wallet.address)),
-        expectedBalance.toString()
+        expectedBalance.toString(),
       )
     })
 
     it('Collect from multiple bills', async function() {
-
       let balanceOne = perBlockFee.mul(toBN(20))
       let subscribersCount = 6
       for (var i = 0; i < subscribersCount; i++) {
-        await althea.addMember(
-          accounts[i], web3.utils.randomHex(32), nick, {from:root}
-        )
+        await althea.addMember(accounts[i], web3.utils.randomHex(32), nick, {
+          from: root,
+        })
       }
       for (var i = 0; i < subscribersCount; i++) {
-        await althea.methods['addBill()']({from: accounts[i], value: balanceOne})
+        await althea.methods['addBill()']({
+          from: accounts[i],
+          value: balanceOne,
+        })
       }
 
       const billCount = toBN(summation(subscribersCount))
-      let expectedBalance = perBlockFee.mul(billCount)
+      let expectedBalance = perBlockFee
+        .mul(billCount)
         .add(toBN(await web3.eth.getBalance(wallet.address)))
 
       await althea.collectBills()
@@ -307,19 +307,18 @@ contract('Althea', function() {
     })
 
     it('Set bill account to zero', async function() {
-
       let balanceOne = perBlockFee.mul(toBN(2))
-      await althea.methods['addBill()']({value: balanceOne})
-      await althea.addMember(
-        accounts[0], web3.utils.randomHex(32), nick, {from:root}
-      )
+      await althea.methods['addBill()']({ value: balanceOne })
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
 
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
 
@@ -327,37 +326,38 @@ contract('Althea', function() {
     })
 
     it(`Reverts when transfer value is zero`, async function() {
-
-      await althea.addMember(
-        accounts[0], web3.utils.randomHex(32), nick, {from:root}
-      )
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
       await reverting(althea.collectBills())
     })
 
     it('Collect bills from bills that has no value and a bill with value', async function() {
-
       let balanceOne = perBlockFee.mul(toBN(2))
-      await althea.methods['addBill()']({from: accounts[1], value: balanceOne})
-      await althea.addMember(
-        accounts[0], web3.utils.randomHex(32), nick, {from:root}
-      )
-      await althea.addMember(
-        accounts[1], web3.utils.randomHex(32), nick, {from:root}
-      )
+      await althea.methods['addBill()']({
+        from: accounts[1],
+        value: balanceOne,
+      })
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
+      await althea.addMember(accounts[1], web3.utils.randomHex(32), nick, {
+        from: root,
+      })
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
       await althea.collectBills()
@@ -366,26 +366,24 @@ contract('Althea', function() {
 
   context('payMyBills', function() {
     it('Bill should have lastUpdated with same blockNumber', async function() {
-
       let balanceOne = perBlockFee.mul(toBN(2))
-      await althea.methods['addBill()']({value: balanceOne})
+      await althea.methods['addBill()']({ value: balanceOne })
       await althea.payMyBills()
       let bill = await althea.billMapping(accounts[0])
       assert(bill.lastUpdated.eq(toBN(await web3.eth.getBlockNumber())))
     })
 
     it('Payment address should have increased balance', async function() {
-
       let balanceOne = perBlockFee.mul(toBN(10))
-      const receipt= await althea.methods['addBill()']({value: balanceOne})
+      const receipt = await althea.methods['addBill()']({ value: balanceOne })
 
       // extra txns to run up the counter
       let blockCount = 5
       for (var i = 0; i < blockCount; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
 
@@ -402,17 +400,16 @@ contract('Althea', function() {
     })
 
     it('Account of bill should be zero when it runs out', async function() {
-
       // the two is the amount of blocks to pass
       let balanceOne = toBN(2).mul(perBlockFee)
-      await althea.methods['addBill()']({value: balanceOne})
+      await althea.methods['addBill()']({ value: balanceOne })
 
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
 
@@ -424,21 +421,20 @@ contract('Althea', function() {
 
   context('withdrawFromBill', function() {
     it('Increases the balance of the subscriber', async function() {
-
       const A = accounts[8]
       let deposit = 10
       let value = toBN(deposit).mul(perBlockFee)
 
       // For some reason truffle isn't recognizing the function overload
-      await althea.methods['addBill()']({from: A, value})
+      await althea.methods['addBill()']({ from: A, value })
       let blockCount = 5
       await mineBlocks(blockCount)
 
       const oldBalance = toBN(await web3.eth.getBalance(A))
-      let receipt = await althea.withdrawFromBill({from: A})
+      let receipt = await althea.withdrawFromBill({ from: A })
       let txn = await web3.eth.getTransaction(receipt.tx)
-      let cost = toBN(receipt.receipt.gasUsed*txn.gasPrice)
-     
+      let cost = toBN(receipt.receipt.gasUsed * txn.gasPrice)
+
       let expectedBalance = oldBalance
         // The total deposit at the beggining
         .add(value)
@@ -450,21 +446,23 @@ contract('Althea', function() {
       const current = toBN(await web3.eth.getBalance(A))
       expectedBalance.eq(current).should.eql(true)
     })
-    
-    it('It reverts (saves gas) when the account has 0', async function() {
 
+    it('It reverts (saves gas) when the account has 0', async function() {
       let balanceOne = toBN(2).mul(perBlockFee)
-      await althea.methods['addBill()']({from: accounts[1], value: balanceOne})
+      await althea.methods['addBill()']({
+        from: accounts[1],
+        value: balanceOne,
+      })
 
       // extra txns to run up the counter
       for (var i = 0; i < 10; i++) {
-        await  web3.eth.sendTransaction({
+        await web3.eth.sendTransaction({
           from: accounts[1],
           to: ZERO,
-          value: 1
+          value: 1,
         })
       }
-      await reverting(althea.withdrawFromBill({from: accounts[1]}))
+      await reverting(althea.withdrawFromBill({ from: accounts[1] }))
     })
   })
 })

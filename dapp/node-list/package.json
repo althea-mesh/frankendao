@@ -5,7 +5,7 @@
   "main": "app/index.tsx",
   "repository": "https://github.com/althea-mesh/frankendao",
   "scripts": {
-    "start": "rm -rf .embark; embark run --nodashboard --nobrowser",
+    "start": "embark run --nodashboard --nobrowser",
     "test": "embark test",
     "dev": "parcel serve app/index.html --no-cache",
     "build": "embark build"
@@ -35,7 +35,7 @@
     "bootstrap": "^4.2.1",
     "braces": "^2.3.2",
     "chai": "^4.2.0",
-    "embark": "^8.0.0",
+    "embark": "^4.0.0-beta.1",
     "eslint": "^5.12.1",
     "eslint-config-react-app": "^3.0.7",
     "eslint-config-standard": "^12.0.0",
@@ -74,6 +74,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^3.6.0",
     "typescript": "^3.3.3333",
+    "web3": "^1.0.0-beta.48",
     "web3-utils": "^1.0.0-beta.48",
     "yo-yoify": "^4.3.0"
   },
