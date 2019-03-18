@@ -23,7 +23,7 @@ contract Althea {
   modifier onlyOwners() {
     address[] memory owners = wallet.getOwners();
     bool owner = false;
-    for(uint8 i = 0; i< owners.length; i++) {
+    for (uint8 i = 0; i < owners.length; i++) {
       if (msg.sender == owners[i]) {
         owner = true;
         break;
@@ -59,6 +59,16 @@ contract Althea {
     addr = userMapping[_ip].ethAddr;
   }
 
+  function getCurrentBalanceOfIpv6(bytes16 _ip) external view returns(uint balance) {
+    Bill memory bill = billMapping[userMapping[_ip].ethAddr];
+    uint amountOwed = block.number.sub(bill.lastUpdated).mul(bill.perBlock);
+    return bill.balance.sub(amountOwed);
+  }
+
+  function getPerBlockFeeOfIpv6(bytes16 _ip) external view returns(uint perBlock) {
+    perBlock = billMapping[userMapping[_ip].ethAddr].perBlock;
+  }
+
   function setPerBlockFee(uint _newFee) external onlyOwners {
     perBlockFee = _newFee;
   }
@@ -87,7 +97,7 @@ contract Althea {
     external 
     onlyOwners
   {
-    require(userMapping[_ip].ethAddr== address(0), "Member already exists");
+    require(userMapping[_ip].ethAddr == address(0), "Member already exists");
     userMapping[_ip] = User(_ethAddr, _nick);
     subnetSubscribers.push(_ip);
     emit NewMember(_ethAddr, _ip, _nick);
@@ -137,7 +147,7 @@ contract Althea {
     uint amountOwed = block.number.sub(bill.lastUpdated).mul(bill.perBlock);
 
     if (amountOwed <= bill.balance) {
-      billMapping[_subscriber].balance= bill.balance.sub(amountOwed);
+      billMapping[_subscriber].balance = bill.balance.sub(amountOwed);
       transferValue = amountOwed;
     } else {
       transferValue = bill.balance;
