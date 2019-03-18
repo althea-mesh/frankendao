@@ -75,7 +75,8 @@ const App: FunctionComponent = () => {
       const ethAddress = user.ethAddr
       const nickname = user.nick
       const bill = await althea.billMapping(ethAddress)
-      const node = { nickname, bill, ethAddress, ipAddress }
+      const balance = await althea.getCurrentBalanceOfIpv6(ipAddress)
+      const node = { nickname, bill, ethAddress, ipAddress, balance }
       initialNodes.push(node)
     }
 

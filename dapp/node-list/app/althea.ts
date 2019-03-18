@@ -1,7 +1,7 @@
 import ethers, { Contract, providers, Wallet } from 'ethers'
 import React from 'react'
-import { abi as altheaAbi } from './contracts/althea'
-import { abi as msigAbi } from './contracts/multisig'
+import altheaAbi from './contracts/althea.json'
+import msigAbi from './contracts/multisig.json'
 
 export const Context = React.createContext(undefined as any)
 
@@ -12,5 +12,7 @@ const wallet = new Wallet(pk, provider)
 const althea = new Contract(contractAddress, altheaAbi, wallet)
 const walletAddress = '0xB1EbADDf5710d42E5C575AeC68396Cd1a4b04Ce4'
 const msig = new Contract(walletAddress, msigAbi, wallet)
+;(window as any).althea = althea
+;(window as any).wallet = wallet
 
 export default althea

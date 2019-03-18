@@ -5,7 +5,7 @@
   "main": "app/index.tsx",
   "repository": "https://github.com/althea-mesh/frankendao",
   "scripts": {
-    "start": "embark run --nodashboard --nobrowser",
+    "start": "embark run --nobrowser",
     "test": "embark test",
     "dev": "parcel serve app/index.html --no-cache",
     "build": "embark build"

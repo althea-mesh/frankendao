@@ -91,12 +91,7 @@ const NodeList: FunctionComponent = () => {
           </thead>
           <tbody>
             {nodes.map((node: Node, i: number) => {
-              const {
-                nickname,
-                ethAddress,
-                ipAddress,
-                bill: { balance },
-              } = node
+              const { nickname, ethAddress, ipAddress, balance } = node
 
               const ethBalance = parseFloat(utils.formatEther(balance))
 
