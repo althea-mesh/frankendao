@@ -74,9 +74,10 @@ const App: FunctionComponent = () => {
       const user = await althea.userMapping(ipAddress)
       const ethAddress = user.ethAddr
       const nickname = user.nick
-      const bill = await althea.billMapping(ethAddress)
-      const balance = await althea.getCurrentBalanceOfIpv6(ipAddress)
-      const node = { nickname, bill, ethAddress, ipAddress, balance }
+      const billBalance = await althea.getCurrentBalanceOfIpv6(ipAddress)
+      const addrBalance = await althea.provider.getBalance(ethAddress)
+      console.log(ethAddress, addrBalance.toString())
+      const node = { nickname, ethAddress, ipAddress, billBalance, addrBalance }
       initialNodes.push(node)
     }
 
@@ -92,6 +93,21 @@ const App: FunctionComponent = () => {
       return { ...node, nickname, ipAddress }
     })
 
+    await althea.removeAllListeners('NewMember')
+    althea.on(
+      'NewMember',
+      (ethAddress: string, ipAddress: string, nickname: string) => {
+        nodes.push({
+          ethAddress,
+          ipAddress,
+          nickname,
+          billBalance: 0,
+          addrBalance: 0,
+        })
+        setNodes(nodes)
+      },
+    )
+
     setNodes(initialNodes)
     setFilteredNodes(initialNodes)
   }
@@ -100,7 +116,7 @@ const App: FunctionComponent = () => {
     init()
     const poll = setInterval(async () => {
       setBlockCount(await althea.provider.getBlockNumber())
-    }, 1000)
+    }, 10000)
     return () => clearInterval(poll)
   }, [])
 

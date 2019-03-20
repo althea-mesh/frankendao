@@ -84,16 +84,24 @@ const NodeList: FunctionComponent = () => {
               <th>{t('nickname')}</th>
               <th>{t('ethAddress')}</th>
               <th>{t('ipAddress')}</th>
-              <th className="text-right">{t('balance')}</th>
+              <th className="text-right">{t('billbalance')}</th>
+              <th className="text-right">{t('addrbalance')}</th>
               <th>{t('status')}</th>
               <th />
             </tr>
           </thead>
           <tbody>
             {nodes.map((node: Node, i: number) => {
-              const { nickname, ethAddress, ipAddress, balance } = node
+              const {
+                nickname,
+                ethAddress,
+                ipAddress,
+                billBalance,
+                addrBalance,
+              } = node
 
-              const ethBalance = parseFloat(utils.formatEther(balance))
+              const ethBillBalance = parseFloat(utils.formatEther(billBalance))
+              const ethAddrBalance = parseFloat(utils.formatEther(addrBalance))
 
               return (
                 <tr key={i}>
@@ -112,7 +120,7 @@ const NodeList: FunctionComponent = () => {
                           paddingRight: 10,
                         }}
                       >
-                        {trunc(ethAddress, 6)}
+                        {ethAddress}
                       </Text>
                     </Blue>
                   </td>
@@ -120,21 +128,26 @@ const NodeList: FunctionComponent = () => {
                     <Text>{ipAddress}</Text>
                   </td>
                   <td className="text-right">
-                    <Text color={fundsColor(ethBalance)}>{ethBalance} ETH</Text>
+                    <Text>{ethAddrBalance} ETH</Text>
+                  </td>
+                  <td className="text-right">
+                    <Text color={fundsColor(ethBillBalance)}>
+                      {ethBillBalance} ETH
+                    </Text>
                   </td>
                   <td>
                     <Text>
-                      {ethBalance > 1 ? (
+                      {ethBillBalance > 1 ? (
                         <IconCheck />
-                      ) : ethBalance > 0 ? (
+                      ) : ethBillBalance > 0 ? (
                         <IconError />
                       ) : (
                         <IconCross />
                       )}
                       &nbsp;
-                      {ethBalance > 1
+                      {ethBillBalance > 1
                         ? 'On-track'
-                        : ethBalance > 0
+                        : ethBillBalance > 0
                         ? 'Low balance'
                         : 'Insufficient funds'}
                     </Text>
