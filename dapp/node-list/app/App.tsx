@@ -76,7 +76,6 @@ const App: FunctionComponent = () => {
       const nickname = user.nick
       const billBalance = await althea.getCurrentBalanceOfIpv6(ipAddress)
       const addrBalance = await althea.provider.getBalance(ethAddress)
-      console.log(ethAddress, addrBalance.toString())
       const node = { nickname, ethAddress, ipAddress, billBalance, addrBalance }
       initialNodes.push(node)
     }
@@ -92,21 +91,6 @@ const App: FunctionComponent = () => {
 
       return { ...node, nickname, ipAddress }
     })
-
-    await althea.removeAllListeners('NewMember')
-    althea.on(
-      'NewMember',
-      (ethAddress: string, ipAddress: string, nickname: string) => {
-        nodes.push({
-          ethAddress,
-          ipAddress,
-          nickname,
-          billBalance: 0,
-          addrBalance: 0,
-        })
-        setNodes(nodes)
-      },
-    )
 
     setNodes(initialNodes)
     setFilteredNodes(initialNodes)
@@ -133,7 +117,13 @@ const App: FunctionComponent = () => {
     }
   }
 
-  const store = { setSearch, displaySidebar, filteredNodes, daoAddress }
+  const store = {
+    setSearch,
+    displaySidebar,
+    filteredNodes,
+    daoAddress,
+    setNodes,
+  }
 
   const navProps = {
     page,

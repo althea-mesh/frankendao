@@ -11,7 +11,7 @@ import {
 } from '@aragon/ui'
 import { utils } from 'ethers'
 import { Address6 } from 'ip-address'
-import React, { FunctionComponent, useContext } from 'react'
+import React, { FunctionComponent, useContext, useEffect } from 'react'
 import Blockies from 'react-blockies'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -56,7 +56,7 @@ const Blue = styled.div`
 
 const NodeList: FunctionComponent = () => {
   const [t] = useTranslation()
-  const { filteredNodes } = useContext(Context)
+  const { setNodes, filteredNodes } = useContext(Context)
   const nodes = filteredNodes
 
   const fundsColor = (funds: number) => (funds > 0 ? 'black' : 'red')
@@ -69,6 +69,38 @@ const NodeList: FunctionComponent = () => {
     const ip = hexIp(e.currentTarget.dataset.ip as string)
     await althea.deleteMember(ip, { gasLimit: 500000 })
   }
+
+  const init = async () => {
+    await althea.removeAllListeners('NewMember')
+    althea.on(
+      'NewMember',
+      (ethAddress: string, ipAddress: string, nickname: string) => {
+        nodes.push({
+          ethAddress,
+          ipAddress,
+          nickname,
+          billBalance: 0,
+          addrBalance: 0,
+        })
+        setNodes(nodes)
+      },
+    )
+
+    await althea.removeAllListeners('MemberRemoved')
+    althea.on(
+      'MemberRemoved',
+      (ethAddress: string, ipAddress: string, nickname: string) => {
+        const index = nodes.findIndex((n: Node) => n.ipAddress === ipAddress)
+        console.log(ethAddress, ipAddress, nickname, index)
+        setNodes(nodes.splice(index, 1))
+      },
+    )
+  }
+
+  useEffect(() => {
+    init()
+    return
+  })
 
   return (
     <div>
