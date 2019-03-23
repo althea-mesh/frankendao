@@ -62,8 +62,6 @@ const App: FunctionComponent = () => {
   const [subscriptionFee, setSubscriptionFee] = useState(false)
   const [page, setPage] = useState('nodeList')
 
-  const [blockCount, setBlockCount] = useState(0)
-
   const init = async () => {
     const count = await althea.getCountOfSubscribers()
     setDaoAddress('12345')
@@ -85,9 +83,8 @@ const App: FunctionComponent = () => {
 
       /*eslint-disable-next-line*/
       nickname = utils.toUtf8String(nickname).replace(/\u0000/g, '')
-      const hexIp: BigInteger = new BigInteger(ipAddress.substr(2), 16)
-
-      ipAddress = Address6.fromBigInteger(hexIp).correctForm() + '/64'
+      const intIp: BigInteger = new BigInteger(ipAddress.substr(2), 16)
+      ipAddress = Address6.fromBigInteger(intIp).correctForm() + '/64'
 
       return { ...node, nickname, ipAddress }
     })
@@ -98,10 +95,7 @@ const App: FunctionComponent = () => {
 
   useEffect(() => {
     init()
-    const poll = setInterval(async () => {
-      setBlockCount(await althea.provider.getBlockNumber())
-    }, 10000)
-    return () => clearInterval(poll)
+    return
   }, [])
 
   const displaySidebar = (name: string) => {
@@ -117,14 +111,6 @@ const App: FunctionComponent = () => {
     }
   }
 
-  const store = {
-    setSearch,
-    displaySidebar,
-    filteredNodes,
-    daoAddress,
-    setNodes,
-  }
-
   const navProps = {
     page,
     pages: Object.keys(pages),
@@ -137,6 +123,15 @@ const App: FunctionComponent = () => {
   const closeNewNode = () => setNewNode(false)
   const closeGenerateReport = () => setGenerateReport(false)
   const closeSubscriptionFee = () => setSubscriptionFee(false)
+
+  const store = {
+    closeNewNode,
+    setSearch,
+    displaySidebar,
+    filteredNodes,
+    daoAddress,
+    setNodes,
+  }
 
   return (
     <Context.Provider value={store}>

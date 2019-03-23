@@ -9,6 +9,7 @@
       "object-literal-sort-keys": false
     },
     "rules": {
+      "curly": false,
       "interface-over-type-literal": false,
       "object-literal-sort-keys": false,
       "no-console": false,

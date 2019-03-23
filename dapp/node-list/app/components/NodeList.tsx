@@ -11,6 +11,7 @@ import {
 } from '@aragon/ui'
 import { utils } from 'ethers'
 import { Address6 } from 'ip-address'
+import { BigInteger } from 'jsbn'
 import React, { FunctionComponent, useContext, useEffect } from 'react'
 import Blockies from 'react-blockies'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +24,7 @@ import NodeStats from './NodeStats'
 const { BigNumber } = utils
 
 const Table = styled.table.attrs({
-  className: 'table-responsive-sm',
+  className: 'table-responsive',
 })`
   background: white;
   width: 100%;
@@ -56,7 +57,7 @@ const Blue = styled.div`
 
 const NodeList: FunctionComponent = () => {
   const [t] = useTranslation()
-  const { setNodes, filteredNodes } = useContext(Context)
+  const { closeNewNode, setNodes, filteredNodes } = useContext(Context)
   const nodes = filteredNodes
 
   const fundsColor = (funds: number) => (funds > 0 ? 'black' : 'red')
@@ -75,6 +76,15 @@ const NodeList: FunctionComponent = () => {
     althea.on(
       'NewMember',
       (ethAddress: string, ipAddress: string, nickname: string) => {
+        const intIp: BigInteger = new BigInteger(ipAddress.substr(2), 16)
+        ipAddress = Address6.fromBigInteger(intIp).correctForm() + '/64'
+
+        nickname = utils.toUtf8String(nickname).replace(/\u0000/g, '')
+        const nodeExists =
+          nodes.findIndex((n: Node) => n.ipAddress === ipAddress) > -1
+
+        if (nodeExists) return
+
         nodes.push({
           ethAddress,
           ipAddress,
@@ -83,6 +93,8 @@ const NodeList: FunctionComponent = () => {
           addrBalance: 0,
         })
         setNodes(nodes)
+
+        closeNewNode()
       },
     )
 
@@ -91,7 +103,6 @@ const NodeList: FunctionComponent = () => {
       'MemberRemoved',
       (ethAddress: string, ipAddress: string, nickname: string) => {
         const index = nodes.findIndex((n: Node) => n.ipAddress === ipAddress)
-        console.log(ethAddress, ipAddress, nickname, index)
         setNodes(nodes.splice(index, 1))
       },
     )
@@ -116,8 +127,8 @@ const NodeList: FunctionComponent = () => {
               <th>{t('nickname')}</th>
               <th>{t('ethAddress')}</th>
               <th>{t('ipAddress')}</th>
-              <th className="text-right">{t('billbalance')}</th>
               <th className="text-right">{t('addrbalance')}</th>
+              <th className="text-right">{t('billbalance')}</th>
               <th>{t('status')}</th>
               <th />
             </tr>
